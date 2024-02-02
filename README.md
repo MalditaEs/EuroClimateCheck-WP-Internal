@@ -1,17 +1,13 @@
-Full Fact - Claim Review Schema
+EE24 + Claim Review Schema Plugin
 ===============================
-Contributors: rhyswynne
 
-Donate link: https://fullfact.org/donate/
+This plugin is a fork of the [Full Fact Claim Review Schema Plugin](https://wordpress.org/plugins/claim-review-schema/) created by [Maldita.es](https://maldita.es/) to add integration with the EFCSN's EE24 Repository platform.
 
 Tags: schema
 
 Requires at least: 5.1
-
-Tested up to: 5.5
-
-Requires PHP: 7.2
-
+Tested up to: 6.4
+Requires PHP: 7.4
 Stable tag: 4.3
 
 License: GPLv2 or later

@@ -5,12 +5,12 @@
  * @version
  */
 /*
-Plugin Name: Full Fact - Claim Review Schema
+Plugin Name: EFCSN ClaimReview EE24 Plugin
 Plugin URI: https://github.com/FullFact/claim-review-schema-wordpress-plugin/
-Description: Plugin for WordPress to implement Claim Review Schema
-Version: 1.0.5
-Author: Full Fact
-Author URI: https://fullfact.org/
+Description: Plugin for WordPress to implement the EE24 Repository and the ClaimReview Schema
+Version: 1.0.0
+Author: EFCSN
+Author URI: https://efcsn.com/
 Tags:
 License: GPLv2 or later
 Text Domain: claimreview
@@ -32,7 +32,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-define( 'CLAIMREVIEW_PLUGIN_PATH', dirname( __FILE__ ) );
-define( 'CLAIMREVIEW_PLUGIN_URL', plugins_url( '', __FILE__ ) );
+define( 'EE24_PLUGIN_PATH', dirname( __FILE__ ) );
+define( 'EE24_PLUGIN_URL', plugins_url( '', __FILE__ ) );
 
-require_once CLAIMREVIEW_PLUGIN_PATH . '/inc/core.php';
+require_once EE24_PLUGIN_PATH . '/inc/core.php';
