@@ -57,6 +57,7 @@ function claim_review_register_settings()
     register_setting('claimreviewee24-options', 'cr-post-types');
     register_setting('claimreviewee24-options', 'ee24-apikey');
     register_setting('claimreviewee24-options', 'ee24-domain');
+    register_setting('claimreviewee24-options', 'ee24-endpoint');
     register_setting('claimreviewee24-options', 'ee24-country');
     register_setting('claimreviewee24-options', 'ee24-language');
 }
@@ -166,6 +167,32 @@ function claim_review_create_settings_fields()
         array('name' => 'ee24-domain', 'label_for' => 'Domain', 'extra-text' => 'The domain of your organization, as provided by the Repository.')
     );
 
+    add_settings_field(
+        'ee24_endpoint',
+        __('EE24 Repository endpoint', 'claimreview'),
+        'claim_review_text_field_callback_function',
+        'fact-check',
+        'ee24',
+        array('name' => 'ee24-endpoint', 'label_for' => 'EE24 Repository endpoint', 'extra-text' => 'Endpoint of the repository.')
+    );
+
+    add_settings_field(
+        'ee24-country',
+        __('Country of Organization', 'claimreview'),
+        'claim_review_select_field_callback_function',
+        'fact-check',
+        'ee24',
+        array('name' => 'ee24-country', 'label_for' => 'Country of the organization', 'extra-text' => 'The country of your organization.', 'values' => countries()));
+
+
+    add_settings_field(
+        'ee24-language',
+        __('Language of Organization', 'claimreview'),
+        'claim_review_select_field_callback_function',
+        'fact-check',
+        'ee24',
+        array('name' => 'ee24-language', 'label_for' => 'Language of the organization', 'extra-text' => 'The default language of your organization.', 'values' => languages()));
+
 }
 
 add_action('admin_init', 'claim_review_create_settings_fields');
@@ -201,6 +228,17 @@ function claim_review_text_field_callback_function($args)
     }
 }
 
+function claim_review_select_field_callback_function($args)
+{
+    $option = get_option( $args['name'] );
+    echo '<select id="' . $args['name'] . '" name="' . $args['name'] . '" required="">';
+
+    foreach ( $args['values'] as $value => $name ) {
+        echo '<option value="' . $value . '"' . selected( $value, $option, false ) . '>' . $name . '</option>';
+    }
+
+    echo '</select>';
+}
 
 /**
  * Function to display simple number fields
@@ -275,4 +313,109 @@ function claim_review_post_types_callback_function()
                value="true" <?php checked(true, $ticked, true); ?> /> <?php echo $post_type->label; ?><br/>
         <?php
     }
+}
+
+function countries()
+{
+    return [
+        'AL' => 'Albania',
+        'AD' => 'Andorra',
+        'AM' => 'Armenia',
+        'AT' => 'Austria',
+        'AZ' => 'Azerbaijan',
+        'BE' => 'Belgium',
+        'BA' => 'Bosnia And Herzegovina',
+        'BG' => 'Bulgaria',
+        'HR' => 'Croatia',
+        'CY' => 'Cyprus',
+        'CZ' => 'Czech Republic',
+        'DK' => 'Denmark',
+        'EE' => 'Estonia',
+        'FI' => 'Finland',
+        'FR' => 'France',
+        'GE' => 'Georgia',
+        'DE' => 'Germany',
+        'GR' => 'Greece',
+        'HU' => 'Hungary',
+        'IS' => 'Iceland',
+        'IE' => 'Ireland',
+        'IT' => 'Italy',
+        'LV' => 'Latvia',
+        'LI' => 'Liechtenstein',
+        'LT' => 'Lithuania',
+        'LU' => 'Luxembourg',
+        'MT' => 'Malta',
+        'MD' => 'Moldova',
+        'MC' => 'Monaco',
+        'ME' => 'Montenegro',
+        'NL' => 'Netherlands',
+        'MK' => 'North Macedonia',
+        'NO' => 'Norway',
+        'PL' => 'Poland',
+        'PT' => 'Portugal',
+        'RO' => 'Romania',
+        'SM' => 'San Marino',
+        'RS' => 'Serbia',
+        'SK' => 'Slovakia',
+        'SI' => 'Slovenia',
+        'ES' => 'Spain',
+        'SE' => 'Sweden',
+        'CH' => 'Switzerland',
+        'TR' => 'Turkey',
+        'UA' => 'Ukraine',
+        'GB' => 'United Kingdom',
+        'XK' => 'Kosovo',
+        'BY' => 'Belarus',
+        'RU' => 'Russia',
+        'OTHER' => 'Other',
+    ];
+}
+
+function languages()
+{
+    return [
+        'SQ' => 'Albanian',
+        'HY' => 'Armenian',
+        'AZ' => 'Azerbaijani',
+        'BE' => 'Belarusian',
+        'BS' => 'Bosnian',
+        'BG' => 'Bulgarian',
+        'CA' => 'Catalan',
+        'HR' => 'Croatian',
+        'CS' => 'Czech',
+        'DA' => 'Danish',
+        'NL' => 'Dutch',
+        'EN' => 'English',
+        'ET' => 'Estonian',
+        'FI' => 'Finnish',
+        'FR' => 'French',
+        'GL' => 'Galician',
+        'KA' => 'Georgian',
+        'DE' => 'German',
+        'EL' => 'Greek',
+        'HU' => 'Hungarian',
+        'IS' => 'Icelandic',
+        'GA' => 'Irish',
+        'IT' => 'Italian',
+        'LV' => 'Latvian',
+        'LT' => 'Lithuanian',
+        'LB' => 'Luxembourgish',
+        'MK' => 'Macedonian',
+        'MT' => 'Maltese',
+        'MO' => 'Montenegrin',
+        'NO' => 'Norwegian',
+        'PL' => 'Polish',
+        'PT' => 'Portuguese',
+        'RO' => 'Romanian',
+        'RU' => 'Russian',
+        'SR' => 'Serbian',
+        'SK' => 'Slovak',
+        'SL' => 'Slovene',
+        'ES' => 'Spanish',
+        'SV' => 'Swedish',
+        'TR' => 'Turkish',
+        'UK' => 'Ukrainian',
+        'EU' => 'Basque',
+        'OTHER' => 'Other',
+    ];
 }

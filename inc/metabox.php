@@ -98,7 +98,7 @@ function ee24_build_claim_box($data)
     $apikey = get_option('ee24-apikey');
     $domain = get_option('ee24-domain');
 
-    $ee24Box = "<div id='ee24-data' data-endpoint='https://api.dev.backoffice.elections24.efcsn.com/articles' data-apikey='$apikey' data-domain='$domain'></div>";
+    $ee24Box = "<div id='ee24-data' data-endpoint='". get_option('ee24-endpoint') . "' data-apikey='$apikey' data-domain='$domain'></div>";
 
 
     $typeOfPublication = '
@@ -178,25 +178,6 @@ function ee24_build_claim_box($data)
         "TR" => "Turkey",
         "GB" => "UK",
     ]; // All available countries
-
-    ob_start();
-
-    echo '<div>
-        <label for="content-location" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country of the organization</label>
-    <select id="select-country-origin" name="countries-origin" placeholder="Select a country..." autocomplete="off">
-            <option value="">Select a country...</option>';
-
-    foreach ($availableCountries as $countryCode => $countryName) {
-        $isSelected = '';
-        if (isset($data['countryOfOrigin']) && $countryCode == $data['countryOfOrigin']) {
-            $isSelected = 'selected';
-        }
-        echo "<option value=\"{$countryCode}\" {$isSelected}>{$countryName}</option>";
-    }
-
-    echo '</select></div>';
-
-    $countryOfOrigin = ob_get_clean();
 
     ob_start();
 
@@ -303,7 +284,7 @@ function ee24_build_claim_box($data)
         <option value="">Select a language...</option>';
 
     foreach ($availableLanguages as $languageCode => $languageName) {
-        $isSelected = ($languageCode == $data['inLanguage']) ? 'selected' : '';
+        $isSelected = ($languageCode == $data['inLanguage'] ?? get_option('ee24-language')) ? 'selected' : '';
         echo "<option value=\"{$languageCode}\" {$isSelected}>{$languageName}</option>";
     }
 
@@ -312,7 +293,7 @@ function ee24_build_claim_box($data)
     $language = ob_get_clean();
 
     $keywordsTopicsRow = '<div class="flex flex-col gap-4"><div class="grid grid-cols-1">' . $typeOfPublication . '</div><div class="grid grid-cols-1">' . $headline . '</div><div class="grid grid-cols-3 gap-4">' . $keywords . $topics . $language . '</div>';
-    $keywordsCountriesRow = '<div class="grid grid-cols-2 gap-4">' . $countryOfOrigin . $contentLocation . '</div>';
+    $keywordsCountriesRow = '<div class="grid grid-cols-2 gap-4">' . $contentLocation . '</div>';
 
     $commonHeader = '
 <div class="flex flex-row items-center gap-4">

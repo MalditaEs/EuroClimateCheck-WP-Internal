@@ -63,14 +63,6 @@ jQuery(document).ready(function () {
         create: true
     });
 
-    new TomSelect("#select-country-origin", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
-
     new TomSelect("#language", {
         create: false,
         sortField: {
@@ -294,7 +286,7 @@ function createAppearance() {
             <option value="pinterest">Pinterest</option>
             <option value="telegram">Telegram</option>
             <option value="signal">Signal</option>
-            <option value="snapchat">Signal</option>
+            <option value="snapchat">Snapchat</option>
             <option value="other">Other</option>
         </select>
     </div>`;

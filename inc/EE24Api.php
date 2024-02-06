@@ -2,8 +2,10 @@
 
 class EE24Api
 {
-    private string $baseUrl = "https://api.dev.backoffice.elections24.efcsn.com/articles";
 
+    private function getEndpoint(){
+        return get_option('ee24-endpoint');
+    }
 
     /**
      * @throws Exception
@@ -13,7 +15,7 @@ class EE24Api
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => $this->baseUrl,
+            CURLOPT_URL => $this->getEndpoint(),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -57,7 +59,7 @@ class EE24Api
       $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => $this->baseUrl . '/' . $externalId,
+            CURLOPT_URL => $this->getEndpoint() . $externalId,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -98,7 +100,7 @@ class EE24Api
 
     public function sendDeleteRequest($externalId, $headers = [])
     {
-        $url = $this->baseUrl . '/' . $externalId;
+        $url = $this->getEndpoint() . '/' . $externalId;
         $ch = curl_init($url);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
