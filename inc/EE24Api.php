@@ -3,7 +3,8 @@
 class EE24Api
 {
 
-    private function getEndpoint(){
+    private function getEndpoint()
+    {
         return get_option('ee24-endpoint');
     }
 
@@ -12,6 +13,8 @@ class EE24Api
      */
     public function sendPostRequest($data, $headers = [])
     {
+        $data['countryOfOrigin'] = get_option('ee24-country');
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -38,14 +41,14 @@ class EE24Api
 
         if ($statusCode != 200 && $statusCode != 201) {
             if (!$response) {
-                throw new Exception('Error');
+                throw new Exception('Error' . $statusCode);
             }
 
             $json = json_decode($response, true);
 
             if (json_last_error() == JSON_ERROR_NONE) {
                 $message = $json['message'] ?? 'Error';
-                throw new Exception($message);
+                throw new Exception(is_array($message) ? implode(', ', $message) : $message);
             } else {
                 throw new Exception('Error');
             }
@@ -56,7 +59,9 @@ class EE24Api
 
     public function sendPatchRequest($externalId, $data, $headers = [])
     {
-      $curl = curl_init();
+        $data['countryOfOrigin'] = get_option('ee24-country');
+
+        $curl = curl_init();
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => $this->getEndpoint() . $externalId,
@@ -82,14 +87,14 @@ class EE24Api
 
         if ($statusCode != 200 && $statusCode != 201) {
             if (!$response) {
-                throw new Exception('Error');
+                throw new Exception('Error' . $statusCode);
             }
 
             $json = json_decode($response, true);
 
             if (json_last_error() == JSON_ERROR_NONE) {
                 $message = $json['message'] ?? 'Error';
-                throw new Exception($message);
+                throw new Exception(is_array($message) ? implode(', ', $message) : $message);
             } else {
                 throw new Exception('Error');
             }
