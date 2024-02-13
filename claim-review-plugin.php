@@ -7,13 +7,13 @@
 /*
 Plugin Name: EFCSN ClaimReview EE24 Plugin
 Plugin URI: https://github.com/FullFact/claim-review-schema-wordpress-plugin/
-Description: Plugin for WordPress to implement the EE24 Repository and the ClaimReview Schema
-Version: 1.0.0
+Description: WordPress Plugin to implement the EE24 Repository and the ClaimReview Schema. Based on FullFact's ClaimReview Schema Plugin.
+Version: 1.0.1
 Author: EFCSN
 Author URI: https://efcsn.com/
 Tags:
 License: GPLv2 or later
-Text Domain: claimreview
+Text Domain: claimreview, efcsn, factchecking, repository
 */
 
 /*
