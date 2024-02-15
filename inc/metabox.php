@@ -213,8 +213,8 @@ function ee24_build_claim_box($data)
         "Security and defense",
         "Economy",
         "Energy",
-        "COVID 19",
-        "Other"
+        "Covid 19",
+        "Others"
     ];
 
     ob_start(); // Start capturing echo output to buffer
