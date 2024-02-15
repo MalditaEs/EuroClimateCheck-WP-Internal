@@ -367,8 +367,8 @@ function ee24_build_claim_box($data)
 
     $availableRatings = [
         "False",
-        "Partly False",
-        "Missing Context",
+        "Partly false",
+        "Missing context",
         "Satire",
         "True",
         "AI generated"
