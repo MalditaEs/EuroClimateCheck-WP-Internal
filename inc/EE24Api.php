@@ -11,9 +11,8 @@ class EE24Api
     {
         return array_filter($data, function ($value) {
             if (is_array($value)) {
-                return !empty(array_filter($value, function ($v) {
-                    return !empty($v);
-                }));
+                $filtered = $this->filterEmptyElementsInData($value);
+                return !empty($filtered);
             }
             return !empty($value);
         });
@@ -82,7 +81,7 @@ class EE24Api
         $data['countryOfOrigin'] = get_option('ee24-country');
         $data = $this->filterEmptyElementsInData($data);
 
-        $curl = $this->initializeCurl($this->getEndpoint() . $externalId, $headers, 'PATCH', $data);
+        $curl = $this->initializeCurl($this->getEndpoint() . '/' . $externalId, $headers, 'PATCH', $data);
         $response = curl_exec($curl);
         $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
