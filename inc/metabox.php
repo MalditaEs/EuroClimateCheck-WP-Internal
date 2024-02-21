@@ -208,7 +208,7 @@ function ee24_build_claim_box($data)
         "Israel - Gaza",
         "EU funds",
         "Election integrity",
-        "EU Institutions",
+        "EU institutions",
         "Agenda 2030",
         "Security and defense",
         "Economy",
