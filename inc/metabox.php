@@ -196,7 +196,7 @@ function ee24_build_claim_box($data)
     $contentLocation = ob_get_clean();
 
     $availableTopics = [
-        "Politics related to the EU",
+        "Politics related with the EU",
         "National-Regional context issues",
         "Legislation",
         "Migration",
