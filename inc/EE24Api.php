@@ -9,13 +9,21 @@ class EE24Api
 
     private function filterEmptyElementsInData($data)
     {
-        return array_filter($data, function ($value) {
-            if (is_array($value)) {
-                $filtered = $this->filterEmptyElementsInData($value);
-                return !empty($filtered);
+        if (is_array($data) || is_object($data)) {
+            foreach ($data as $key => $value) {
+                if (is_object($value) || is_array($value)) {
+                    $value = $this->filterEmptyElementsInData($value);
+                }
+
+                if (empty($value)) {
+                    unset($data[$key]);
+                } else {
+                    $data[$key] = $value;
+                }
             }
-            return !empty($value);
-        });
+        }
+
+        return $data;
     }
 
     private function initializeCurl($endpoint, $headers, $method, $data)
