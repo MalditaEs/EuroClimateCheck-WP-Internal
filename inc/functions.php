@@ -77,13 +77,15 @@ function repository_status_script()
 function get_repository_request_status()
 {
     if (isset($_GET['id'])) {
-        +
+
         $id = sanitize_text_field(
             wp_unslash($_GET['id'])
         );
 
         $transient = get_transient("ee24_error");
         if ($transient) {
+            delete_transient('ee24_error');
+
             return new \WP_REST_Response(
                 array(
                     'type' => 'error',
@@ -91,6 +93,7 @@ function get_repository_request_status()
                 )
             );
         } else {
+            delete_transient('ee24_success');
             return new \WP_REST_Response(
                 array(
                     'type' => 'success',

@@ -938,25 +938,56 @@ function ee24_save_data($post_id, $post)
                 $data['externalId'] = $existingData['externalId'];
                 try {
                     $response = $api->sendPatchRequest($data['externalId'], $serializedData, $headers);
-                    $responseData = json_decode($response);
+                    $data['externalId'] = json_decode($response)->externalId;
+                    set_transient("ee24_success", $data['externalId'], 45);
                 } catch (\Throwable $e) {
-                    $error = new WP_Error($e->getMessage(), $e->getCode());
                     set_transient("ee24_error", $e->getMessage(), 45);
                 }
             } else {
                 // Doesn't exist in the Repository
                 try {
                     $response = $api->sendPostRequest($serializedData, $headers);
-                    $responseData = json_decode($response);
                     $data['externalId'] = json_decode($response)->externalId;
+                    set_transient("ee24_success", $data['externalId'], 45);
                 } catch (\Throwable $e) {
                     set_transient("ee24_error", $e->getMessage(), 45);
                 }
             }
         }
+
         update_post_meta($post_id, '_ee24_repository', $data);
     }
 }
 
 add_action('save_post', 'claimbox_save_data', 10, 2);
 add_action('save_post', 'ee24_save_data', 11, 2);
+add_action('admin_notices', 'ee24_admin_notice');
+
+function ee24_admin_notice()
+{
+    // Get the API response stored earlier
+    $error = get_transient('ee24_error');
+
+    if ($error !== false) {
+        echo '<div class="notice notice-error is-dismissible">';
+        echo 'Error exporting to the EE24 Repository: ' . esc_html($error);
+        echo '</div>';
+    }
+
+    $success = get_transient('ee24_success');
+
+    if ($success !== false) {
+        echo '<div class="notice notice-success is-dismissible">';
+        echo '<p>The EE24 Repository has been updated</p>';
+        echo '</div>';
+    }
+
+    $post = get_post();
+    if ($post && !use_block_editor_for_post($post)) {
+        if ($error) {
+            delete_transient('ee24_error');
+        } else if ($success) {
+            delete_transient('ee24_success');
+        }
+    }
+}
