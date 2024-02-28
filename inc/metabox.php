@@ -379,6 +379,11 @@ function ee24_build_claim_box($data)
         "Indirect"
     ];
 
+    $claimPublishedDate = '<div>
+<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="claim-date-published">Claim Date Published:</label>
+  <input class="w-full" type="datetime-local" style="height: 2.2em" id="claim-date-published" name="claim-date-published" value="' . (isset($data['itemReviewed']['datePublished']) ? $data['itemReviewed']['datePublished'] : '') . '">
+</div>';
+
     ob_start();
 
     echo '<div>
@@ -439,7 +444,7 @@ function ee24_build_claim_box($data)
     </div>
 </div>';
 
-    $politicalRow = '<div class="article-type-field article-type-field-factcheck hidden"><div class="bg-teal-50 my-4 p-4 rounded">' . $politicalHeader . '<div class="my-4 grid grid-cols-1">' . $politicalReviewedClaim . $politicalEnglishReviewedClaim . '</div><div class="my-4 grid grid-cols-4 gap-4">' . $politicalNameRelated . $politicalParties . $politicalRating . $politicalEuRelation . "</div></div></div>";
+    $politicalRow = '<div class="article-type-field article-type-field-factcheck hidden"><div class="bg-teal-50 my-4 p-4 rounded">' . $politicalHeader . '<div class="my-4 grid grid-cols-1">' . $politicalReviewedClaim . $politicalEnglishReviewedClaim . '</div><div class="my-4 grid grid-cols-4 gap-4">' . $politicalNameRelated . $claimPublishedDate . $politicalParties . $politicalRating . $politicalEuRelation . "</div></div></div>";
     $ee24Box .= $politicalRow;
 
     ob_start();
@@ -471,6 +476,11 @@ function ee24_build_claim_box($data)
     $debunkEnglishReviewedClaim = ob_get_clean();
 
     ob_start();
+
+    $claimPublishedDate = '<div>
+<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="claim-date-published">Claim Date Published:</label>
+  <input class="w-full" type="datetime-local" style="height: 2.2em" id="claim-date-published" name="claim-date-published" value="' . (isset($data['itemReviewed']['datePublished']) ? $data['itemReviewed']['datePublished'] : '') . '">
+</div>';
 
     echo '<div>
     <label for="select-debunk-rating" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rating</label>
@@ -511,7 +521,7 @@ function ee24_build_claim_box($data)
     </div>
 </div>';
 
-    $politicalRow = '<div class="article-type-field article-type-field-debunk hidden"><div class="bg-red-50 my-4 p-4 rounded">' . $debunkHeader . '<div class="my-4 grid grid-cols-1">' . $debunkReviewedClaim . $debunkEnglishReviewedClaim . '</div><div class="my-4 grid grid-cols-2 gap-4">' . $debunkRating . $debunkEuRelation . "</div></div></div>";
+    $politicalRow = '<div class="article-type-field article-type-field-debunk hidden"><div class="bg-red-50 my-4 p-4 rounded">' . $debunkHeader . '<div class="my-4 grid grid-cols-1">' . $debunkReviewedClaim . $debunkEnglishReviewedClaim . '</div><div class="my-4 grid grid-cols-3 gap-4">' . $claimPublishedDate . $debunkRating . $debunkEuRelation . "</div></div></div>";
     $ee24Box .= $politicalRow;
 
     $recurrencesHeader = '
@@ -911,7 +921,7 @@ function ee24_save_data($post_id, $post)
         }, $_POST['appearance-url'] ?? [], array_keys($_POST['appearance-url'] ?? []));
 
         $data['itemReviewed'] = [
-            'datePublished' => null,
+            'datePublished' => $_POST['claim-date-published'] ?? null,
             'author' => $_POST['author'],
             'politicalParty' => $_POST['party'],
             'appearances' => $appearances,
