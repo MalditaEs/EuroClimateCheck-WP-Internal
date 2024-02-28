@@ -145,12 +145,18 @@ jQuery(document).ready(function () {
 
 
             let dataSelector = jQuery(this).data('source');
-
-            let originText = jQuery("." + dataSelector).text();
-            if (!originText || originText === "") {
-                originText = jQuery("." + dataSelector).val();
-            }
-
+            // Split string by char |
+            let selectors = dataSelector.split('|');
+            let originText;
+            selectors.find(selector => {
+                let element = jQuery(selector);
+                if (!element.length) {
+                    return false;
+                } else {
+                    originText = element[0].value ?? element[0].textContent;
+                    return true;
+                }
+            });
             translate(originText, input, element.find('i'));
         }
     });

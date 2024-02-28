@@ -60,6 +60,7 @@ function claim_review_register_settings()
     register_setting('claimreviewee24-options', 'ee24-endpoint');
     register_setting('claimreviewee24-options', 'ee24-country');
     register_setting('claimreviewee24-options', 'ee24-language');
+    register_setting('claimreviewee24-options', 'ee24-compat');
 }
 
 add_action('admin_init', 'claim_review_register_settings');
@@ -193,6 +194,12 @@ function claim_review_create_settings_fields()
         'ee24',
         array('name' => 'ee24-language', 'label_for' => 'Language of the organization', 'extra-text' => 'The default language of your organization.', 'values' => languages()));
 
+    add_settings_field(
+        'ee24-compat',
+        __('Enable compat mode', 'claimreview'),
+        'ee24_compat_mode',
+        'fact-check',
+        'ee24');
 }
 
 add_action('admin_init', 'claim_review_create_settings_fields');
@@ -268,6 +275,17 @@ function claim_review_display_settings_callback()
 {
     ?><p><?php _e('This function controls the display settings of the plugin.', 'claimreview'); ?></p>
     <?php
+}
+
+function ee24_compat_mode()
+{
+    $option = get_option('ee24-compat');
+
+    ?>
+
+        <input type="checkbox" id="ee24-compat" name="ee24-compat"
+               value="1" <?php checked(true, $option, true); ?> /> <?php echo "Compat mode can help if you're having design/UI issues" ?><br/>
+        <?php
 }
 
 function ee24_section_callback()
