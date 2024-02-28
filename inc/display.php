@@ -16,7 +16,7 @@ function claim_review_build_json_ld() {
 		$post_type         = get_post_type( $post );
 
 
-		if ( array_key_exists( 'cr-showon' . $post_type, $allvalidposttypes ) ) {
+		if ( array_key_exists( 'cr-showon' . $post_type, $allvalidposttypes ?? [] ) ) {
 
 			if ( ! $allvalidposttypes['cr-showon' . $post_type] ) {
 				return;
