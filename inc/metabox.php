@@ -505,22 +505,21 @@ function ee24_build_claim_box($data)
 </div>
 </div>';
 
-    $availableParties = [
-        "European peoples party" => "European People's Party",
-        "Party of european socialist" => "Party of European Socialist",
-        "Alliance of liberals and democrats for europe" => "Alliance of Liberals and Democrats for Europe",
-        "Greens" => "Greens",
-        "Alliance of europeans conservatives and reformists" => "Alliance of Europeans Conservatives and Reformists",
-        "The party of european left" => "The Party of European Left",
-        "Movement for a europe of liberties and democracy" => "Movement for a Europe of Liberties and Democracy",
-        "European democratic party" => "European Democratic Party",
-        "European free alliance" => "European Free Alliance",
-        "European alliance for freedom" => "European Alliance for Freedom",
-        "Alliance of european national movements" => "Alliance of European National Movements",
-        "European christian political movement" => "European Christian Political Movement",
-        "Eu democrats" => "EU Democrats",
-        "Other party" => "Other Party"
-    ];
+    $availableParties =
+        [
+            'Alliance of Liberals and Democrats for Europe Party (ALDE)' => 'Alliance of Liberals and Democrats for Europe Party (ALDE)',
+            'European Christian Political Movement (ECPM)' => 'European Christian Political Movement (ECPM)',
+            'European Conservatives and Reformists Party (ECR Party)' => 'European Conservatives and Reformists Party (ECR Party)',
+            'European Democratic Party (EDP)' => 'European Democratic Party (EDP)',
+            'European Free Alliance (EFA)' => 'European Free Alliance (EFA)',
+            'European Green Party (EFP)' => 'European Green Party (EFP)',
+            'European People\'s Party (EPP)' => 'European People\'s Party (EPP)',
+            'Identity and Democracy Party (ID Party)' => 'Identity and Democracy Party (ID Party)',
+            'Non-Inscrits (NI)' => 'Non-Inscrits (NI)',
+            'Party of the European Left (PEL)' => 'Party of the European Left (PEL)',
+            'Party of European Socialists (PES)' => 'Party of European Socialists (PES)',
+            'Other party' => 'Other party'
+        ];
 
     $availableRatings = [
         "False",
