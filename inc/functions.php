@@ -82,22 +82,26 @@ function get_repository_request_status()
             wp_unslash($_GET['id'])
         );
 
-        $transient = get_transient("ee24_error");
-        if ($transient) {
+        $errorTransient = get_transient("ee24_error");
+        $successTransient = get_transient("ee24_success");
+
+        if ($errorTransient) {
             delete_transient('ee24_error');
 
             return new \WP_REST_Response(
                 array(
                     'type' => 'error',
-                    'message' => wp_unslash("Error exporting to the EE24 Repository: " . $transient),
+                    'message' => wp_unslash("Error exporting to the EE24 Repository: " . $errorTransient),
                 )
             );
-        } else {
+        }
+
+        if($successTransient) {
             delete_transient('ee24_success');
             return new \WP_REST_Response(
                 array(
                     'type' => 'success',
-                    'message' => wp_unslash("The EE24 Repository has been updated"),
+                    'message' => wp_unslash("The EE24 Repository has been updated. " . $successTransient),
                 )
             );
         }
