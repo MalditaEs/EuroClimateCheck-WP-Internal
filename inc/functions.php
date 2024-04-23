@@ -4,37 +4,42 @@
  *
  * @return void
  */
-function ee24_notices()
-{
-    $namespace = 'api-eea24/v1';
-    $route = 'repository-status';
-    register_rest_route(
-        $namespace,
-        $route,
-        array(
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => 'get_repository_request_status',
-            'permission_callback' => function () {
-                return current_user_can('edit_posts');
-            },
-        )
-    );
+function ee24_notices() {
+	$namespace = 'api-eea24/v1';
+	$route     = 'repository-status';
+	register_rest_route(
+		$namespace,
+		$route,
+		array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => 'get_repository_request_status',
+			'permission_callback' => function () {
+				return current_user_can( 'edit_posts' );
+			},
+		)
+	);
 }
 
-add_action('rest_api_init', 'ee24_notices');
+add_action( 'rest_api_init', 'ee24_notices' );
+add_action('current_screen', 'detecting_current_screen');
 
-add_action('admin_footer-post.php', 'repository_status_script');
-add_action('admin_footer-post-new.php', 'repository_status_script');
-
-
-function repository_status_script()
+function detecting_current_screen()
 {
-    ?>
+	$current_screen = get_current_screen();
+
+    if($current_screen->is_block_editor()){
+	    add_action( 'admin_footer-post.php', 'repository_status_script' );
+	    add_action( 'admin_footer-post-new.php', 'repository_status_script' );
+    }
+}
+
+function repository_status_script() {
+	?>
     <script type="text/javascript">
 
         const {subscribe, select} = wp.data;
         const {isSavingPost} = select('core/editor');
-        var checked = true;
+        let checked = true;
         subscribe(() => {
             if (isSavingPost()) {
                 checked = false;
@@ -71,41 +76,41 @@ function repository_status_script()
             );
         };
     </script>
-    <?php
+	<?php
 }
 
-function get_repository_request_status()
-{
-    if (isset($_GET['id'])) {
+function get_repository_request_status() {
+	if ( isset( $_GET['id'] ) ) {
 
-        $id = sanitize_text_field(
-            wp_unslash($_GET['id'])
-        );
+		$id = sanitize_text_field(
+			wp_unslash( $_GET['id'] )
+		);
 
-        $errorTransient = get_transient("ee24_error");
-        $successTransient = get_transient("ee24_success");
+		$errorTransient   = get_transient( "ee24_error" );
+		$successTransient = get_transient( "ee24_success" );
 
-        if ($errorTransient) {
-            delete_transient('ee24_error');
+		if ( $errorTransient ) {
+			delete_transient( 'ee24_error' );
 
-            return new \WP_REST_Response(
-                array(
-                    'type' => 'error',
-                    'message' => wp_unslash("Error exporting to the EE24 Repository: " . $errorTransient),
-                )
-            );
-        }
+			return new \WP_REST_Response(
+				array(
+					'type'    => 'error',
+					'message' => wp_unslash( "Error exporting to the EE24 Repository: " . $errorTransient ),
+				)
+			);
+		}
 
-        if($successTransient) {
-            delete_transient('ee24_success');
-            return new \WP_REST_Response(
-                array(
-                    'type' => 'success',
-                    'message' => wp_unslash("The EE24 Repository has been updated. " . $successTransient),
-                )
-            );
-        }
-    }
+		if ( $successTransient ) {
+			delete_transient( 'ee24_success' );
 
-    return null;
+			return new \WP_REST_Response(
+				array(
+					'type'    => 'success',
+					'message' => wp_unslash( "The EE24 Repository has been updated. " . $successTransient ),
+				)
+			);
+		}
+	}
+
+	return null;
 }
