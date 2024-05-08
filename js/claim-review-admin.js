@@ -57,75 +57,93 @@ jQuery(document).ready(function () {
         claimrow.remove();
     });
 
-    new TomSelect("#input-keywords", {
-        persist: false,
-        createOnBlur: true,
-        create: true
-    });
+    if (document.querySelector("#input-keywords") != null) {
+        new TomSelect("#input-keywords", {
+            persist: false,
+            createOnBlur: true,
+            create: true
+        });
+    }
 
-    new TomSelect("#language", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#language") != null) {
+        new TomSelect("#language", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-content-location", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-content-location") != null) {
+        new TomSelect("#select-content-location", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-topics", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-topics") != null) {
+        new TomSelect("#select-topics", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-parties", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-parties") != null) {
+        new TomSelect("#select-parties", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-rating", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-rating") != null) {
+        new TomSelect("#select-rating", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-eu-relation", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-eu-relation") != null) {
+        new TomSelect("#select-eu-relation", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-debunk-rating", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-debunk-rating") != null) {
+        new TomSelect("#select-debunk-rating", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
-    new TomSelect("#select-debunk-eu-relation", {
-        create: false,
-        sortField: {
-            field: "text",
-            direction: "asc"
-        }
-    });
+    if (document.querySelector("#select-debunk-eu-relation") != null) {
+        new TomSelect("#select-debunk-eu-relation", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    }
 
     document.querySelectorAll('.tomselect-init').forEach(el => {
         new TomSelect(el, {
