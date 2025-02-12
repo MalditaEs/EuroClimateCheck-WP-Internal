@@ -5,12 +5,12 @@
  * @version
  */
 /*
-Plugin Name: EFCSN ClaimReview EE24 Plugin
+Plugin Name: EFCSN EuroClimateCheck Plugin
 Plugin URI: https://github.com/FullFact/claim-review-schema-wordpress-plugin/
-Description: WordPress Plugin to implement the EE24 Repository and the ClaimReview Schema. Based on FullFact's ClaimReview Schema Plugin.
-Version: 1.0.18
-Author: EFCSN
-Author URI: https://efcsn.com/
+Description: WordPress Plugin to implement the EuroClimateCheck Repository and the ClaimReview Schema.
+Version: 1.0.0
+Author: Maldita.es
+Author URI: https://maldita.es
 Tags:
 License: GPLv2 or later
 Text Domain: claimreview, efcsn, factchecking, repository

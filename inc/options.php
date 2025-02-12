@@ -5,18 +5,18 @@
  *
  * @return void
  */
-function claim_review_add_menu_to_settings()
+function euroclimatecheck_add_menu_to_settings()
 {
     add_options_page(
         'Claim Review + EE24 Repository Settings',
         'Claim Review + EE24 Repository Settings',
         'manage_options',
         'fact-check',
-        'claim_review_options_page'
+        'euroclimatecheck_options_page'
     );
 }
 
-add_action('admin_menu', 'claim_review_add_menu_to_settings');
+add_action('admin_menu', 'euroclimatecheck_add_menu_to_settings');
 
 
 /**
@@ -24,7 +24,7 @@ add_action('admin_menu', 'claim_review_add_menu_to_settings');
  *
  * @return void
  */
-function claim_review_options_page()
+function euroclimatecheck_options_page()
 {
     ?>
     <div class="wrap">
@@ -47,7 +47,7 @@ function claim_review_options_page()
  *
  * @return void
  */
-function claim_review_register_settings()
+function euroclimatecheck_register_settings()
 {
     register_setting('claimreviewee24-options', 'cr-organisation-name');
     register_setting('claimreviewee24-options', 'cr-organisation-url');
@@ -63,7 +63,7 @@ function claim_review_register_settings()
     register_setting('claimreviewee24-options', 'ee24-compat');
 }
 
-add_action('admin_init', 'claim_review_register_settings');
+add_action('admin_init', 'euroclimatecheck_register_settings');
 
 
 /**
@@ -71,47 +71,47 @@ add_action('admin_init', 'claim_review_register_settings');
  *
  * @return void
  */
-function claim_review_create_settings_fields()
+function euroclimatecheck_create_settings_fields()
 {
 
     add_settings_section(
         'organistion-details',
         __('CLAIM REVIEW - Your Organisation Details', 'claimreview'),
-        'claim_review_organisation_settings_callback',
+        'euroclimatecheck_organisation_settings_callback',
         'fact-check'
     );
 
     add_settings_field(
-        'claim_review_organisation_name-setting-id',
+        'euroclimatecheck_organisation_name-setting-id',
         __('Organisation Name', 'claimreview'),
-        'claim_review_text_field_callback_function',
+        'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'organistion-details',
         array('name' => 'cr-organisation-name', 'label_for' => 'Organisation Name')
     );
 
     add_settings_field(
-        'claim_review_organisation_url-setting-id',
+        'euroclimatecheck_organisation_url-setting-id',
         __('Organisation URL', 'claimreview'),
-        'claim_review_text_field_callback_function',
+        'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'organistion-details',
         array('name' => 'cr-organisation-url', 'label_for' => 'Organisation URL', 'extra-text' => 'If not present, we will use the home page URL.')
     );
 
     add_settings_field(
-        'claim_review_organisation_alternate_url-setting-id',
+        'euroclimatecheck_organisation_alternate_url-setting-id',
         __('Alternate URL', 'claimreview'),
-        'claim_review_text_field_callback_function',
+        'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'organistion-details',
         array('name' => 'cr-organisation-alternate-url', 'label_for' => 'Organisation Alternate URL', 'extra-text' => 'An alternate URL for the organisation. Can be a social media account.')
     );
 
     add_settings_field(
-        'claim_review_organisation_max_rating-setting-id',
+        'euroclimatecheck_organisation_max_rating-setting-id',
         __('Max Rating', 'claimreview'),
-        'claim_review_number_field_callback_function',
+        'euroclimatecheck_number_field_callback_function',
         'fact-check',
         'organistion-details',
         array('name' => 'cr-organisation-max-number-rating', 'label_for' => 'Numerical Rating Max', 'extra-text' => 'The maximum rating for a number scale. Set this to -1 should you want no ratings.', 'step' => 1)
@@ -119,9 +119,9 @@ function claim_review_create_settings_fields()
 
 
     add_settings_field(
-        'claim_review_organisation_min_rating-setting-id',
+        'euroclimatecheck_organisation_min_rating-setting-id',
         __('Min Rating', 'claimreview'),
-        'claim_review_number_field_callback_function',
+        'euroclimatecheck_number_field_callback_function',
         'fact-check',
         'organistion-details',
         array('name' => 'cr-organisation-min-number-rating', 'label_for' => 'Numerical Rating Max', 'extra-text' => 'The maximum rating for a number scale. Set this to -1 should you want no ratings.', 'step' => 1)
@@ -131,14 +131,14 @@ function claim_review_create_settings_fields()
     add_settings_section(
         'display-settings',
         __('CLAIM REVIEW - Display Settings', 'claimreview'),
-        'claim_review_display_settings_callback',
+        'euroclimatecheck_display_settings_callback',
         'fact-check'
     );
 
     add_settings_field(
-        'claim_review_organisation_post_types-setting-id',
+        'euroclimatecheck_organisation_post_types-setting-id',
         __('Post Types', 'claimreview'),
-        'claim_review_post_types_callback_function',
+        'euroclimatecheck_post_types_callback_function',
         'fact-check',
         'display-settings'
     );
@@ -146,32 +146,32 @@ function claim_review_create_settings_fields()
     add_settings_section(
         'ee24',
         __('EE24 - Connection with the Repository', 'claimreview'),
-        'ee24_section_callback',
+        'euroclimatecheck_section_callback',
         'fact-check'
     );
 
     add_settings_field(
-        'ee24_api-key',
+        'euroclimatecheck_api-key',
         __('API Key', 'claimreview'),
-        'claim_review_text_field_callback_function',
+        'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'ee24',
         array('name' => 'ee24-apikey', 'label_for' => 'API Key', 'extra-text' => 'The Repository API Key provided.')
     );
 
     add_settings_field(
-        'ee24_domain',
+        'euroclimatecheck_domain',
         __('Domain', 'claimreview'),
-        'claim_review_text_field_callback_function',
+        'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'ee24',
         array('name' => 'ee24-domain', 'label_for' => 'Domain', 'extra-text' => 'The domain of your organization, as provided by the Repository.')
     );
 
     add_settings_field(
-        'ee24_endpoint',
+        'euroclimatecheck_endpoint',
         __('EE24 Repository endpoint', 'claimreview'),
-        'claim_review_text_field_callback_function',
+        'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'ee24',
         array('name' => 'ee24-endpoint', 'label_for' => 'EE24 Repository endpoint', 'extra-text' => 'Endpoint of the repository.')
@@ -180,7 +180,7 @@ function claim_review_create_settings_fields()
     add_settings_field(
         'ee24-country',
         __('Country of Organization', 'claimreview'),
-        'claim_review_select_field_callback_function',
+        'euroclimatecheck_select_field_callback_function',
         'fact-check',
         'ee24',
         array('name' => 'ee24-country', 'label_for' => 'Country of the organization', 'extra-text' => 'The country of your organization.', 'values' => countries()));
@@ -189,7 +189,7 @@ function claim_review_create_settings_fields()
     add_settings_field(
         'ee24-language',
         __('Language of Organization', 'claimreview'),
-        'claim_review_select_field_callback_function',
+        'euroclimatecheck_select_field_callback_function',
         'fact-check',
         'ee24',
         array('name' => 'ee24-language', 'label_for' => 'Language of the organization', 'extra-text' => 'The default language of your organization.', 'values' => languages()));
@@ -197,12 +197,12 @@ function claim_review_create_settings_fields()
     add_settings_field(
         'ee24-compat',
         __('Enable compat mode', 'claimreview'),
-        'ee24_compat_mode',
+        'euroclimatecheck_compat_mode',
         'fact-check',
         'ee24');
 }
 
-add_action('admin_init', 'claim_review_create_settings_fields');
+add_action('admin_init', 'euroclimatecheck_create_settings_fields');
 
 
 /**
@@ -210,7 +210,7 @@ add_action('admin_init', 'claim_review_create_settings_fields');
  *
  * @return void
  */
-function claim_review_organisation_settings_callback()
+function euroclimatecheck_organisation_settings_callback()
 {
     ?><p><?php _e('Put details of your organisation here, these will be used on all articles', 'claimreview'); ?></p>
     <?php
@@ -223,7 +223,7 @@ function claim_review_organisation_settings_callback()
  * @param array $args All array arguments.
  * @return void
  */
-function claim_review_text_field_callback_function($args)
+function euroclimatecheck_text_field_callback_function($args)
 {
     $option = get_option($args['name']);
     echo '<input type="text" id="' . $args['name'] . '" name="' . $args['name'] . '" value="' . $option . '" class="regular-text ltr" />';
@@ -235,7 +235,7 @@ function claim_review_text_field_callback_function($args)
     }
 }
 
-function claim_review_select_field_callback_function($args)
+function euroclimatecheck_select_field_callback_function($args)
 {
     $option = get_option( $args['name'] );
     echo '<select id="' . $args['name'] . '" name="' . $args['name'] . '" required="">';
@@ -253,7 +253,7 @@ function claim_review_select_field_callback_function($args)
  * @param array $args All array arguments.
  * @return void
  */
-function claim_review_number_field_callback_function($args)
+function euroclimatecheck_number_field_callback_function($args)
 {
     $option = get_option($args['name']);
     echo '<input type="number" id="' . $args['name'] . '" name="' . $args['name'] . '" value="' . $option . '" step="' . $args['step'] . '" class="regular-text ltr" />';
@@ -271,13 +271,13 @@ function claim_review_number_field_callback_function($args)
  *
  * @return void
  */
-function claim_review_display_settings_callback()
+function euroclimatecheck_display_settings_callback()
 {
     ?><p><?php _e('This function controls the display settings of the plugin.', 'claimreview'); ?></p>
     <?php
 }
 
-function ee24_compat_mode()
+function euroclimatecheck_compat_mode()
 {
     $option = get_option('ee24-compat');
 
@@ -288,7 +288,7 @@ function ee24_compat_mode()
         <?php
 }
 
-function ee24_section_callback()
+function euroclimatecheck_section_callback()
 {
     ?>
     <p><?php _e('Here you can manage the connection data between your website and the EE24 Repository.', 'claimreview'); ?></p>
@@ -300,7 +300,7 @@ function ee24_section_callback()
  *
  * @return void
  */
-function claim_review_post_types_callback_function()
+function euroclimatecheck_post_types_callback_function()
 {
     $option = get_option('cr-post-types');
 
