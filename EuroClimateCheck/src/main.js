@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import PrimeVue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
+import ToastService from 'primevue/toastservice'
 
 // Create a function to mount the app
 window.mountEuroClimateCheck = (element) => {
@@ -16,6 +17,9 @@ window.mountEuroClimateCheck = (element) => {
       preset: Aura
     }
   })
+  
+  // Add ToastService
+  app.use(ToastService)
   
   // Mount the app
   app.mount(element)

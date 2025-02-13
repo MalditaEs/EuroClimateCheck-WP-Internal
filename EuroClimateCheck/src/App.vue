@@ -6,9 +6,11 @@ import MultiSelect from 'primevue/multiselect';
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import Chip from 'primevue/chip';
+import {useToast} from 'primevue/usetoast';
+import Toast from 'primevue/toast';
 import Button from 'primevue/button';
+import TranslateButton from './components/TranslateButton.vue';
 
-// Reactive states with proper initialization
 const data = ref({
   type: 'Factcheck',
   url: '',
@@ -19,7 +21,6 @@ const data = ref({
   topic: '',
   subtopics: [],
   contentLocation: [],
-  countryOfOrigin: null,
 
   claimTextNative: '',
   claimText: '',
@@ -37,6 +38,15 @@ const data = ref({
 
 const loading = ref(true);
 const error = ref(null);
+
+// Añadir refs para la API
+const apiConfig = ref({
+  apikey: '',
+  domain: '',
+  endpoint: ''
+});
+
+const toast = useToast();
 
 onMounted(async () => {
   try {
@@ -56,13 +66,53 @@ onMounted(async () => {
       return;
     }
 
+    // Get the title from the WP article
+    const titleInput = document.getElementById('title');
+    const titleH1 = document.querySelector('.editor-post-title');
+    const headlineText = titleInput?.value || titleH1?.textContent || '';
+
+    // Add listeners for title changes
+    if (titleInput) {
+      titleInput.addEventListener('input', (e) => {
+        data.value.headlineNative = e.target.value;
+        data.value.headline = e.target.value;
+      });
+    }
+
+    if (titleH1) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          data.value.headlineNative = titleH1.textContent;
+          data.value.headline = titleH1.textContent;
+        });
+      });
+
+      observer.observe(titleH1, { 
+        characterData: true, 
+        childList: true, 
+        subtree: true 
+      });
+    }
+
     try {
       const parsedData = JSON.parse(rawData);
-      // Merge the parsed data with our default structure
-      data.value = {
-        ...data.value,
-        ...parsedData.data
+      // Guardar la configuración de la API
+      apiConfig.value = {
+        apikey: parsedData.apikey,
+        domain: parsedData.domain,
+        endpoint: document.getElementById('ee24-data')?.dataset?.endpoint
       };
+
+        const transformedData = {
+        ...data.value,
+        ...parsedData.data,
+        language: parsedData.data.inLanguage || null,
+        topic: parsedData.data.topic || '',
+        headlineNative: parsedData.data.headlineNative || headlineText || '',
+        headline: parsedData.data.headline || headlineText || '',
+      };
+
+      data.value = transformedData;
       console.log('Loaded data:', data.value);
     } catch (parseError) {
       error.value = "Failed to parse data: " + parseError.message;
@@ -574,20 +624,18 @@ const addClaimAppearance = () => {
   });
 };
 
-// Add a watcher for the data
 watch(data, (newData) => {
-  // Update hidden input with stringified data
   const hiddenInput = document.getElementById('ee24-form-data');
   if (hiddenInput) {
     hiddenInput.value = JSON.stringify(newData);
   }
-}, { deep: true }); // deep: true ensures we watch nested objects
+}, { deep: true }); 
 
 </script>
 
 <template>
+  <Toast />
   <div class="ec:p-4">
-    <!-- Add this hidden input right after the opening div -->
     <input
       type="hidden"
       id="ee24-form-data"
@@ -609,6 +657,8 @@ watch(data, (newData) => {
     <div v-else>
 
       {{data}}
+      {{ apiConfig }}
+
       <header class="ec:mb-4 ec:bg-slate-100 ec:p-4 ec:rounded-lg">
         <img
             alt="EuroClimateCheck logo"
@@ -638,22 +688,40 @@ watch(data, (newData) => {
 
                 <div class="ec:w-full">
                   <div><span>Headline</span></div>
-                  <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.headline"
-                             placeholder="Headline of the article in native language"></InputText>
+                  <InputText 
+                    class="ec:w-full ec:!border ec:!border-slate-300" 
+                    v-model="data.headlineNative"
+                    placeholder="Headline of the article in native language"
+                  />
                 </div>
 
                 <div class="ec:w-full">
-                  <div><span>Headline in English</span></div>
-                  <InputText class="ec:!border ec:!border-slate-300 ec:w-full" v-model="data.headline"
-                             placeholder="Headline of the article, translated to English"></InputText>
+                  <div class="ec:flex ec:flex-row ec:gap-2 ec:items-center">
+                    <span>Headline in English</span>
+                  </div>
+                  <div class="ec:flex ec:items-center ec:gap-2">
+                    <InputText 
+                      class="ec:!border ec:grow ec:!border-slate-300" 
+                      v-model="data.headline"
+                      placeholder="Headline of the article, translated to English"
+                    />
+                    <TranslateButton style="width: 20% !important;"
+                      :getSourceText="() => data.headlineNative"
+                      :updateTargetField="(text) => data.headline = text"
+                      :apiConfig="apiConfig"
+                    />
+                  </div>
                 </div>
               </div>
 
               <div class="ec:flex ec:flex-wrap ec:gap-4 ec:mt-8">
                 <div class="ec:w-1/4">
                   <div><span>Language of the article</span></div>
-                  <Select v-model="data.language" :options="cleanLanguages" filter
-                          placeholder="Select a language" optionLabel="name"
+                  <Select v-model="data.language" 
+                          :options="cleanLanguages" 
+                          filter
+                          placeholder="Select a language" 
+                          optionLabel="name"
                           class="ec:w-full"/>
                 </div>
 
@@ -662,13 +730,6 @@ watch(data, (newData) => {
                   <MultiSelect class="ec:w-full" v-model="data.contentLocation" filter :options="cleanAllowedCountries"
                                placeholder="Select one or more countries"
                                optionLabel="name"></MultiSelect>
-                </div>
-
-                <div class="ec:w-1/4">
-                  <div><span>Country of origin</span></div>
-                  <Select v-model="data.countryOfOrigin" :options="cleanReducedCountries" filter optionLabel="name"
-                          placeholder="Select a country"
-                          class="ec:w-full"/>
                 </div>
 
               </div>
