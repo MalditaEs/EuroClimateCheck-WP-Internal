@@ -5,26 +5,6 @@ class EE24Api {
 		return get_option( 'ee24-endpoint' );
 	}
 
-	private function filterEmptyElementsInData( $data ) {
-		if ( is_array( $data ) || is_object( $data ) ) {
-			foreach ( $data as $key => $value ) {
-				if ( $key === 'contentLocation' ) {
-					continue;
-				}
-				if ( is_object( $value ) || is_array( $value ) ) {
-					$value = $this->filterEmptyElementsInData( $value );
-				}
-				if ( empty( $value ) ) {
-					unset( $data[ $key ] );
-				} else {
-					$data[ $key ] = $value;
-				}
-			}
-		}
-
-		return $data;
-	}
-
 	private function initializeCurl( $endpoint, $headers, $method, $data ) {
 		$curl = curl_init();
 
@@ -77,7 +57,6 @@ class EE24Api {
 			'publisherUrl' => parse_url(get_bloginfo('url'), PHP_URL_HOST),
 			'image' => $data['image'],
 			'keywords' => $data['keywords'],
-			'inLanguage' => $data['language']['code'] ?? null,
 			'topic' => $data['topic'],
 			'subtopics' => array_map(function($subtopic) use ($data) {
 				return $data['topic'] . ' - ' . $subtopic;
@@ -85,23 +64,25 @@ class EE24Api {
 			'contentLocation' => array_map(function($location) {
 				return $location['code'];
 			}, $data['contentLocation'] ?? []),
-			'countryOfOrigin' => get_option('ee24-country')
+			'countryOfOrigin' => get_option('ee24-country'),
+			'evidences' => [],
+			'claimReview' => []
 		];
 
 		// Add Factcheck specific fields if type is Factcheck
 		if ($data['type'] === 'Factcheck') {
-			$transformed = array_merge($transformed, [
-				'claimText' => $data['claimText'],
-				'claimTextNative' => $data['claimTextNative'],
+			$transformed['claimReview'] = [
+				'text' => $data['claimText'],
+				'textNative' => $data['claimTextNative'],
 				'rating' => $data['rating'],
 				'multiclaim' => $data['multiclaim'],
 				'distortion' => $data['distortion'],
 				'aiVerification' => $data['aiVerification'],
 				'harm' => $data['harm'],
 				'harmEscalation' => $data['harmEscalation'],
-				'evidences' => $data['evidences'],
-				'claimAppearances' => $data['claimAppearances']
-			]);
+				'appearances' => $data['claimAppearances']
+			];
+			$transformed['evidences'] = $data['evidences'];
 		}
 
 		return $transformed;
@@ -112,7 +93,6 @@ class EE24Api {
 	 */
 	public function sendPostRequest( $data, $headers = [] ) {
 		$transformedData = $this->transformDataForApi($data);
-		$transformedData = $this->filterEmptyElementsInData($transformedData);
 
 		$curl       = $this->initializeCurl( $this->getEndpoint(), $headers, 'POST', $transformedData );
 		$response   = curl_exec( $curl );
@@ -124,7 +104,6 @@ class EE24Api {
 
 	public function sendPatchRequest( $externalId, $data, $headers = [] ) {
 		$transformedData = $this->transformDataForApi($data);
-		$transformedData = $this->filterEmptyElementsInData($transformedData);
 
 		$curl       = $this->initializeCurl( $this->getEndpoint() . '/' . $externalId, $headers, 'PATCH', $transformedData );
 		$response   = curl_exec( $curl );
