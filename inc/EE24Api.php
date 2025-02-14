@@ -57,6 +57,7 @@ class EE24Api {
 			'publisherUrl' => parse_url(get_bloginfo('url'), PHP_URL_HOST),
 			'image' => $data['image'],
 			'keywords' => $data['keywords'],
+			'inLanguage' => $data['inLanguage']['code'],
 			'topic' => $data['topic'],
 			'subtopics' => array_map(function($subtopic) use ($data) {
 				return $data['topic'] . ' - ' . $subtopic;
@@ -71,18 +72,48 @@ class EE24Api {
 
 		// Add Factcheck specific fields if type is Factcheck
 		if ($data['type'] === 'Factcheck') {
+			// Transformar las appearances
+			$appearances = array_map(function($appearance) {
+				return [
+					'url' => $appearance['url'],
+					'archivedAt' => $appearance['archivedAt'],
+					'difussionFormat' => $appearance['diffusionFormat'], // Nota: hay un typo en la API ('difussion' vs 'diffusion')
+					'platform' => $appearance['platform'],
+					'appearanceDate' => $appearance['appearanceDate'],
+					'views' => intval($appearance['views']),
+					'likes' => intval($appearance['likes']),
+					'comments' => intval($appearance['comments']),
+					'shares' => intval($appearance['shares']),
+					'actionTaken' => filter_var($appearance['actionTakenByPlatform'], FILTER_VALIDATE_BOOLEAN),
+					'appearanceBody' => $appearance['appearanceBody'],
+					'claimant' => $appearance['claimant'],
+					'claimantType' => $appearance['claimantType'],
+					'claimantInfluence' => $appearance['claimantInfluence']
+				];
+			}, $data['claimAppearances'] ?? []);
+
 			$transformed['claimReview'] = [
-				'text' => $data['claimText'],
-				'textNative' => $data['claimTextNative'],
-				'rating' => $data['rating'],
-				'multiclaim' => $data['multiclaim'],
-				'distortion' => $data['distortion'],
+				'claimReviewed' => $data['claimText'],
+				'claimReviewedNative' => $data['claimTextNative'],
+				'multiclaim' => filter_var($data['multiclaim'], FILTER_VALIDATE_BOOLEAN),
+				'distortionType' => $data['distortion'],
 				'aiVerification' => $data['aiVerification'],
-				'harm' => $data['harm'],
+				'harm' => filter_var($data['harm'], FILTER_VALIDATE_BOOLEAN),
 				'harmEscalation' => $data['harmEscalation'],
-				'appearances' => $data['claimAppearances']
+				'reviewRating' => $data['rating'],
+				'appearances' => $appearances,
+				'associatedClaimReview' => [] // Añadir si se implementa en el futuro
 			];
-			$transformed['evidences'] = $data['evidences'];
+
+			// Transformar evidences
+			$transformed['evidences'] = array_map(function($evidence) {
+				return [
+					'question' => $evidence['question'],
+					'answer' => $evidence['answer'],
+					'url' => $evidence['url'],
+					'type' => $evidence['type']
+				];
+			}, $data['evidences'] ?? []);
 		}
 
 		return $transformed;
@@ -104,6 +135,11 @@ class EE24Api {
 
 	public function sendPatchRequest( $externalId, $data, $headers = [] ) {
 		$transformedData = $this->transformDataForApi($data);
+
+		if($transformedData['type'] === 'Prebunk'){
+			unset($transformedData['claimReview']);
+			unset($transformedData['evidences']);
+		}
 
 		$curl       = $this->initializeCurl( $this->getEndpoint() . '/' . $externalId, $headers, 'PATCH', $transformedData );
 		$response   = curl_exec( $curl );

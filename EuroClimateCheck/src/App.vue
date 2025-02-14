@@ -1,18 +1,18 @@
 <script setup>
-import {onMounted, ref, computed, watch} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {SelectButton} from "primevue";
 import {Card} from "primevue";
 import MultiSelect from 'primevue/multiselect';
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import Chip from 'primevue/chip';
-import {useToast} from 'primevue/usetoast';
 import Toast from 'primevue/toast';
 import Button from 'primevue/button';
+import DatePicker from 'primevue/datepicker';
 import TranslateButton from './components/TranslateButton.vue';
 
 const data = ref({
-  type: 'Factcheck',
+  type: null,
   url: '',
   headlineNative: '',
   headline: '',
@@ -21,19 +21,19 @@ const data = ref({
   topic: '',
   subtopics: [],
   contentLocation: [],
+  inLanguage: null,
 
-  claimTextNative: '',
-  claimText: '',
-  rating: '',
+  claimReviewed: '',
+  claimReviewedNative: '',
   multiclaim: false,
-  distortion: [],
+  distortionType: [],
   aiVerification: [],
   harm: false,
   harmEscalation: null,
-
+  reviewRating: '',
   claimAppearances: [],
   evidences: [],
-
+  associatedClaimReview: []
 });
 
 const loading = ref(true);
@@ -45,8 +45,6 @@ const apiConfig = ref({
   domain: '',
   endpoint: ''
 });
-
-const toast = useToast();
 
 onMounted(async () => {
   try {
@@ -75,7 +73,6 @@ onMounted(async () => {
     if (titleInput) {
       titleInput.addEventListener('input', (e) => {
         data.value.headlineNative = e.target.value;
-        data.value.headline = e.target.value;
       });
     }
 
@@ -83,14 +80,13 @@ onMounted(async () => {
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           data.value.headlineNative = titleH1.textContent;
-          data.value.headline = titleH1.textContent;
         });
       });
 
-      observer.observe(titleH1, { 
-        characterData: true, 
-        childList: true, 
-        subtree: true 
+      observer.observe(titleH1, {
+        characterData: true,
+        childList: true,
+        subtree: true
       });
     }
 
@@ -100,13 +96,25 @@ onMounted(async () => {
       apiConfig.value = {
         apikey: parsedData.apikey,
         domain: parsedData.domain,
+        language: parsedData.language,
         endpoint: document.getElementById('ee24-data')?.dataset?.endpoint
       };
 
-        const transformedData = {
+      // Convertir fechas string a objetos Date en claimAppearances
+      if (parsedData.data.claimAppearances) {
+        parsedData.data.claimAppearances = parsedData.data.claimAppearances.map(appearance => ({
+          ...appearance,
+          appearanceDate: appearance.appearanceDate ? new Date(appearance.appearanceDate) : null
+        }));
+      }
+
+      const transformedData = {
         ...data.value,
         ...parsedData.data,
-        language: parsedData.data.inLanguage || null,
+        inLanguage: languages[parsedData.data.inLanguage] || {
+          code: apiConfig.value.language,
+          name: languages[apiConfig.value.language] || "Unknown"
+        } || null,
         topic: parsedData.data.topic || '',
         headlineNative: parsedData.data.headlineNative || headlineText || '',
         headline: parsedData.data.headline || headlineText || '',
@@ -455,47 +463,47 @@ const cleanLanguages = Object.entries(languages).map(([languageCode, languageNam
 }));
 
 const topics = [
-    'Extreme weather events',
-    'Transport',
-    'Renewables',
-    'Conspiracy theories',
-    'Fossil fuels',
-    'Waste',
-    'Other'
+  'Extreme weather events',
+  'Transport',
+  'Renewables',
+  'Conspiracy theories',
+  'Fossil fuels',
+  'Waste',
+  'Other'
 ];
 const subTopic = {
   'Extreme weather events': [
-  'Increasing temperatures',
-  'Heatwaves',
-  'Floods',
-  'Water scarcity'
-    ],
+    'Increasing temperatures',
+    'Heatwaves',
+    'Floods',
+    'Water scarcity'
+  ],
   'Transport': [
-  'Electric cars'
-    ],
+    'Electric cars'
+  ],
   'Renewables': [
-  'Wind energy',
-  'Solar PV',
-  'Offshore wind energy'
-    ],
+    'Wind energy',
+    'Solar PV',
+    'Offshore wind energy'
+  ],
   'Conspiracy theories': [
-  'Chemtrails',
-  '2030 agenda',
-  '15-minute cities',
-  'HAARP'
-    ],
+    'Chemtrails',
+    '2030 agenda',
+    '15-minute cities',
+    'HAARP'
+  ],
   'Fossil fuels': [
-  'Natural gas',
-  'Oil',
-  'Coal'
-    ],
+    'Natural gas',
+    'Oil',
+    'Coal'
+  ],
   'Waste': [
-  'Plastic'
-    ],
+    'Plastic'
+  ],
   'Other': [
-  'Climate change denial',
-  'Meat consumption'
-    ]
+    'Climate change denial',
+    'Meat consumption'
+  ]
 };
 
 const newKeyword = ref('');
@@ -516,7 +524,7 @@ const addEvidence = () => {
   data.value.evidences.push({
     question: '',
     answer: '',
-    sourceUrl: '',
+    url: '',
     type: ''
   });
 };
@@ -531,7 +539,7 @@ const ratingOptions = [
   'Lack of evidence'
 ];
 
-const yesNoOptions = ['Yes', 'No'];
+const yesNoOptions = {true: 'Yes', false: 'No'};
 
 const distortionTypes = [
   'Unproven',
@@ -574,49 +582,53 @@ const evidenceTypes = [
   'Other'
 ];
 
-const platforms = [
-  'X',
-  'Facebook',
-  'Instagram',
-  'TikTok',
-  'YouTube',
-  'WhatsApp',
-  'Telegram',
-  'Signal',
-  'Other'
-];
+const platforms = {
+  'x': 'X',
+  'facebook': 'Facebook',
+  'instagram': 'Instagram',
+  'tiktok': 'TikTok',
+  'youtube': 'YouTube',
+  'whatsapp': 'WhatsApp',
+  'telegram': 'Telegram',
+  'signal': 'Signal',
+  'other': 'Other'
+};
 
-const diffusionFormats = [
-  'Text',
-  'Image',
-  'Video',
-  'Audio',
-  'Other'
-];
+const diffusionFormats = {
+  'text': 'Text',
+  'image': 'Image',
+  'video': 'Video',
+  'audio': 'Audio',
+  'other': 'Other'
+};
 
 const claimantTypes = [
   'Person',
   'Organization'
 ];
 
-const claimantInfluenceLevels = [
-  'High (E.g. President/PM of a country, a high-profile MP, a mainstream political party, household names)',
-  'Medium (E.g. a community leader, a famous actor, someone famous in the media/social media (with many followers))',
-  'Low (E.g. random social media users, anonymous sources, a head teacher in a school, etc.'
-];
+const claimantInfluenceLevels = {
+  'High': 'High (E.g. President/PM of a country, a high-profile MP, a mainstream political party, household names)',
+  'Medium': 'Medium (E.g. a community leader, a famous actor, someone famous in the media/social media (with many followers))',
+  'Low': 'Low (E.g. random social media users, anonymous sources, a head teacher in a school, etc.'
+};
+
+const platformOptions = Object.entries(platforms).map(([value, label]) => ({value, label}));
+const formatOptions = Object.entries(diffusionFormats).map(([value, label]) => ({value, label}));
+const influenceLevelOptions = Object.entries(claimantInfluenceLevels).map(([value, label]) => ({value, label}));
 
 const addClaimAppearance = () => {
   data.value.claimAppearances.push({
+    url: '',
+    archivedAt: '',
+    difussionFormat: '',
     platform: '',
-    diffusionFormat: '',
     appearanceDate: null,
-    appearanceUrl: '',
-    archiveUrl: '',
     views: null,
     likes: null,
     comments: null,
     shares: null,
-    actionTakenByPlatform: false,
+    actionTaken: false,
     appearanceBody: '',
     claimant: '',
     claimantType: '',
@@ -629,18 +641,18 @@ watch(data, (newData) => {
   if (hiddenInput) {
     hiddenInput.value = JSON.stringify(newData);
   }
-}, { deep: true }); 
+}, {deep: true});
 
 </script>
 
 <template>
-  <Toast />
+  <Toast/>
   <div class="ec:p-4">
     <input
-      type="hidden"
-      id="ee24-form-data"
-      name="ee24-form-data"
-      :value="JSON.stringify(data)"
+        type="hidden"
+        id="ee24-form-data"
+        name="ee24-form-data"
+        :value="JSON.stringify(data)"
     />
 
     <!-- Loading state -->
@@ -656,7 +668,7 @@ watch(data, (newData) => {
     <!-- Content -->
     <div v-else>
 
-      {{data}}
+      {{ data }}
       {{ apiConfig }}
 
       <header class="ec:mb-4 ec:bg-slate-100 ec:p-4 ec:rounded-lg">
@@ -679,19 +691,21 @@ watch(data, (newData) => {
           />
         </div>
 
-        <template v-if="data.type !== ''">
+        <template v-if="data.type === 'Factcheck' || data.type === 'Prebunk'">
           <Card>
-            <template #title><span class="ec:flex ec:items-center ec:bg-emerald-900 ec:rounded-lg ec:p-4 ec:text-slate-50 ec:mb-4"><i class="fa-solid fa-file ec:mr-2"></i> Basic fields</span></template>
+            <template #title><span
+                class="ec:flex ec:items-center ec:bg-emerald-900 ec:rounded-lg ec:p-4 ec:text-slate-50 ec:mb-4"><i
+                class="fa-solid fa-file ec:mr-2"></i> Basic fields</span></template>
 
             <template #content>
               <div class="ec:flex ec:flex-wrap ec:gap-4">
 
                 <div class="ec:w-full">
                   <div><span>Headline</span></div>
-                  <InputText 
-                    class="ec:w-full ec:!border ec:!border-slate-300" 
-                    v-model="data.headlineNative"
-                    placeholder="Headline of the article in native language"
+                  <InputText
+                      class="ec:w-full ec:!border ec:!border-slate-300"
+                      v-model="data.headlineNative"
+                      placeholder="Headline of the article in native language"
                   />
                 </div>
 
@@ -700,15 +714,15 @@ watch(data, (newData) => {
                     <span>Headline in English</span>
                   </div>
                   <div class="ec:flex ec:items-center ec:gap-2">
-                    <InputText 
-                      class="ec:!border ec:grow ec:!border-slate-300" 
-                      v-model="data.headline"
-                      placeholder="Headline of the article, translated to English"
+                    <InputText
+                        class="ec:!border ec:grow ec:!border-slate-300"
+                        v-model="data.headline"
+                        placeholder="Headline of the article, translated to English"
                     />
                     <TranslateButton style="width: 20% !important;"
-                      :getSourceText="() => data.headlineNative"
-                      :updateTargetField="(text) => data.headline = text"
-                      :apiConfig="apiConfig"
+                                     :getSourceText="() => data.headlineNative"
+                                     :updateTargetField="(text) => data.headline = text"
+                                     :apiConfig="apiConfig"
                     />
                   </div>
                 </div>
@@ -717,10 +731,10 @@ watch(data, (newData) => {
               <div class="ec:flex ec:flex-wrap ec:gap-4 ec:mt-8">
                 <div class="ec:w-1/4">
                   <div><span>Language of the article</span></div>
-                  <Select v-model="data.language" 
-                          :options="cleanLanguages" 
+                  <Select v-model="data.inLanguage"
+                          :options="cleanLanguages"
                           filter
-                          placeholder="Select a language" 
+                          placeholder="Select a language"
                           optionLabel="name"
                           class="ec:w-full"/>
                 </div>
@@ -745,7 +759,8 @@ watch(data, (newData) => {
 
                 <div class="ec:flex-grow">
                   <div><span>Subtopics</span></div>
-                  <MultiSelect class="ec:w-full" v-model="data.subtopics" filter :options="subTopic[data.topic]" :select-all="false" placeholder="Select one or more subtopics"></MultiSelect>
+                  <MultiSelect class="ec:w-full" v-model="data.subtopics" filter :options="subTopic[data.topic]"
+                               :select-all="false" placeholder="Select one or more subtopics"></MultiSelect>
                 </div>
               </div>
 
@@ -765,7 +780,7 @@ watch(data, (newData) => {
                   <div><span>Keywords</span></div>
                   <div class="ec:w-full ec:flex ec:gap-2">
                     <template v-for="keyword in data.keywords">
-                      <Chip :label="keyword" removable />
+                      <Chip :label="keyword" removable/>
                     </template>
                   </div>
                 </div>
@@ -779,53 +794,59 @@ watch(data, (newData) => {
         <template v-if="data.type === 'Factcheck'">
 
           <Card>
-            <template #title><span class="ec:flex ec:items-center ec:bg-amber-900 ec:rounded-lg ec:p-4 ec:text-slate-50 ec:mb-4"><i class="fa-solid fa-check ec:mr-2"></i> Claim, rating and harm</span></template>
+            <template #title><span
+                class="ec:flex ec:items-center ec:bg-amber-900 ec:rounded-lg ec:p-4 ec:text-slate-50 ec:mb-4"><i
+                class="fa-solid fa-check ec:mr-2"></i> Claim, rating and harm</span></template>
             <template #content>
               <div class="ec:flex ec:flex-wrap ec:gap-4">
                 <div class="ec:w-full">
                   <div><span>Claim text in native language</span></div>
-                  <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimTextNative"
+                  <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewedNative"
                              placeholder="Original claim text"></InputText>
                 </div>
 
                 <div class="ec:w-full">
                   <div><span>Claim text in English</span></div>
-                  <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimText"
+                  <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewed"
                              placeholder="Claim text translated to English"></InputText>
                 </div>
 
                 <div class="ec:w-1/3">
                   <div><span>Rating</span></div>
-                  <Select filter v-model="data.rating" :options="ratingOptions" placeholder="Select rating" class="ec:w-full"/>
+                  <Select filter v-model="data.reviewRating" :options="ratingOptions" placeholder="Select rating"
+                          class="ec:w-full"/>
                 </div>
 
                 <div class="ec:w-1/3">
                   <div><span>Multiple claims?</span></div>
-                  <SelectButton v-model="data.multiclaim" :options="yesNoOptions" />
+                  <SelectButton v-model="data.multiclaim" :options="yesNoOptions"/>
                 </div>
 
                 <div class="ec:w-full">
                   <div><span>Distortion types</span></div>
-                  <MultiSelect filter v-model="data.distortion" :options="distortionTypes" placeholder="Select distortion types" class="ec:w-full" :selectAll="false"/>
+                  <MultiSelect filter v-model="data.distortionType" :options="distortionTypes"
+                               placeholder="Select distortion types" class="ec:w-full" :selectAll="false"/>
                 </div>
 
                 <div class="ec:w-full">
                   <div><span>AI verification methods</span></div>
-                  <MultiSelect filter v-model="data.aiVerification" :options="aiVerificationMethods" placeholder="Select AI verification methods" class="ec:w-full" :selectAll="false"/>
+                  <MultiSelect filter v-model="data.aiVerification" :options="aiVerificationMethods"
+                               placeholder="Select AI verification methods" class="ec:w-full" :selectAll="false"/>
                 </div>
 
-               <div class="ec:flex ec:w-full ec:gap-4">
-                <div>
-                  <div><span>Potential for harm?</span></div>
-                  <SelectButton v-model="data.harm" :options="yesNoOptions" />
-                </div>
+                <div class="ec:flex ec:w-full ec:gap-4">
+                  <div>
+                    <div><span>Potential for harm?</span></div>
+                    <SelectButton v-model="data.harm" :options="yesNoOptions"/>
+                  </div>
 
-                <div class="ec:grow">
-                  <div><span>Harm escalation</span></div>
-                  <Select filter v-model="data.harmEscalation" :options="harmEscalationLevels" placeholder="Select harm escalation" class="ec:w-full"/>
+                  <div class="ec:grow">
+                    <div><span>Harm escalation</span></div>
+                    <Select filter v-model="data.harmEscalation" :options="harmEscalationLevels"
+                            placeholder="Select harm escalation" class="ec:w-full"/>
+                  </div>
                 </div>
               </div>
-               </div>
             </template>
           </Card>
 
@@ -848,90 +869,104 @@ watch(data, (newData) => {
                     <div class="ec:w-1/2">
                       <div><span>Platform</span></div>
                       <Select filter v-model="appearance.platform"
-                             :options="platforms"
-                             placeholder="Select platform"
-                             class="ec:w-full"/>
+                              :options="platformOptions"
+                              optionLabel="label"
+                              optionValue="value"
+                              placeholder="Select platform"
+                              class="ec:w-full"/>
                     </div>
 
                     <div class="ec:w-1/2">
                       <div><span>Diffusion format</span></div>
-                      <Select filter v-model="appearance.diffusionFormat"
-                             :options="diffusionFormats"
-                             placeholder="Select format"
-                             class="ec:w-full"/>
+                      <Select filter v-model="appearance.difussionFormat"
+                              :options="formatOptions"
+                              optionLabel="label"
+                              optionValue="value"
+                              placeholder="Select format"
+                              class="ec:w-full"/>
                     </div>
                   </div>
 
                   <div class="ec:w-full">
                     <div><span>Appearance URL</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                              v-model="appearance.appearanceUrl"/>
+                               v-model="appearance.url"/>
                   </div>
 
                   <div class="ec:w-full">
                     <div><span>Archive URL</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                              v-model="appearance.archiveUrl"/>
+                               v-model="appearance.archivedAt"/>
                   </div>
 
                   <div class="ec:flex ec:gap-4">
                     <div class="ec:w-1/4">
                       <div><span># views</span></div>
                       <InputText type="number" class="ec:w-full ec:!border ec:!border-slate-300"
-                                v-model="appearance.views"/>
+                                 v-model="appearance.views"/>
                     </div>
 
                     <div class="ec:w-1/4">
                       <div><span># likes</span></div>
                       <InputText type="number" class="ec:w-full ec:!border ec:!border-slate-300"
-                                v-model="appearance.likes"/>
+                                 v-model="appearance.likes"/>
                     </div>
 
                     <div class="ec:w-1/4">
                       <div><span># comments</span></div>
                       <InputText type="number" class="ec:w-full ec:!border ec:!border-slate-300"
-                                v-model="appearance.comments"/>
+                                 v-model="appearance.comments"/>
                     </div>
 
                     <div class="ec:w-1/4">
                       <div><span># shares</span></div>
                       <InputText type="number" class="ec:w-full ec:!border ec:!border-slate-300"
-                                v-model="appearance.shares"/>
+                                 v-model="appearance.shares"/>
                     </div>
                   </div>
 
-                  <div class="ec:w-full">
-                    <div><span>Action taken by platform?</span></div>
-                    <SelectButton v-model="appearance.actionTakenByPlatform" :options="yesNoOptions" />
+                  <div class="ec:flex ec:gap-4">
+                    <div class="ec:w-1/4">
+                      <div><span>Appearance date</span></div>
+                      <DatePicker v-model="appearance.appearanceDate" showIcon iconDisplay="input"/>
+                    </div>
+
+                    <div class="ec:w-1/4">
+                      <div><span>Action taken by platform?</span></div>
+                      <SelectButton v-model="appearance.actionTaken" :options="yesNoOptions"/>
+                    </div>
+
                   </div>
 
                   <div class="ec:w-full">
                     <div><span>Appearance body</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                              v-model="appearance.appearanceBody"/>
+                               v-model="appearance.appearanceBody"/>
                   </div>
 
                   <div class="ec:flex ec:gap-4">
                     <div class="ec:grow">
                       <div><span>Claimant</span></div>
                       <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                                v-model="appearance.claimant"/>
+                                 v-model="appearance.claimant"/>
                     </div>
 
                     <div class="ec:w-1/4">
                       <div><span>Claimant type</span></div>
                       <Select filter v-model="appearance.claimantType"
-                             :options="claimantTypes"
-                             placeholder="Select type"
-                             class="ec:w-full"/>
+                              :options="claimantTypes"
+                              placeholder="Select type"
+                              class="ec:w-full"/>
                     </div>
 
                     <div class="ec:w-1/3">
                       <div><span>Claimant influence</span></div>
                       <Select filter v-model="appearance.claimantInfluence"
-                             :options="claimantInfluenceLevels"
-                             placeholder="Select influence level"
-                             class="ec:w-full"/>
+                              :options="influenceLevelOptions"
+                              optionLabel="label"
+                              optionValue="value"
+                              placeholder="Select influence level"
+                              class="ec:w-full"/>
                     </div>
                   </div>
                 </div>
@@ -954,32 +989,33 @@ watch(data, (newData) => {
                 <div v-for="(evidence, index) in data.evidences" :key="index"
                      class="ec:flex ec:flex-col ec:gap-4 ec:p-4 ec:ml-4 ec:border-l-2 ec:border-sky-900">
                   <div class="ec:w-full">
-                    <div><span>Question</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What specific question addresses the claim being evaluated?</span></div>
+                    <div><span>Question</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What specific question addresses the claim being evaluated?</span>
+                    </div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                              v-model="evidence.question"
-                              />
+                               v-model="evidence.question"
+                    />
                   </div>
 
                   <div class="ec:w-full">
                     <div><span>Answer</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                              v-model="evidence.answer"
-                              />
+                               v-model="evidence.answer"
+                    />
                   </div>
 
                   <div class="ec:w-full">
                     <div><span>Source URL</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
-                              v-model="evidence.sourceUrl"
-                              />
+                               v-model="evidence.url"
+                    />
                   </div>
 
                   <div class="ec:w-full">
                     <div><span>Type of evidence</span></div>
                     <Select filter v-model="evidence.type"
-                           :options="evidenceTypes"
-                           placeholder="Select evidence type"
-                           class="ec:w-full"/>
+                            :options="evidenceTypes"
+                            placeholder="Select evidence type"
+                            class="ec:w-full"/>
                   </div>
                 </div>
               </div>

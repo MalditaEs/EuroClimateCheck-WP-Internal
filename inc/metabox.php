@@ -100,7 +100,8 @@ function ee24_build_claim_box( $data ) {
 		echo json_encode([
 			"data" => $data,
 			"apikey" => get_option('ee24-apikey'),
-			"domain" => get_option('ee24-domain')
+			"domain" => get_option('ee24-domain'),
+			"language" => get_option('ee24-language')
 		]);
 		?>
 </script>
@@ -246,7 +247,7 @@ function euroclimatecheck_build_claim_box( $x = 1, $data = [] ) {
 	$claimbox .= '<div class="crfull"><label for="claim-location-' . $x . '"><strong>' . __( 'Claim Location', 'claimreview' ) . '</strong></label>
 	<br />
 	<input class="widefat" type="text" name="claim[' . $arraykey . '][location]" id="claim-location-' . $x . '" value="' . $claimlocationcurrent . '" /><br/>
-	<span class="description">' . __( 'Where the claim was made e.g. “At a press conference”.', 'claimreview' ) . '</span></div>';
+	<span class="description">' . __( 'Where the claim was made e.g. "At a press conference".', 'claimreview' ) . '</span></div>';
 
 	$claimbox .= '<div class="crhalf"><label for="claim-author-job-title-' . $x . '"><strong>' . __( 'Claim Author Job Title', 'claimreview' ) . '</strong></label>
 	<br />
@@ -489,20 +490,26 @@ function updateEE24Metadata($post_id) {
 			'datePublished' => get_post_datetime($post_id),
 			'image' => get_the_post_thumbnail_url(get_the_ID(), 'full'),
 			'keywords' => $formData['keywords'],
-			'inLanguage' => $formData['language'],
+			'inLanguage' => $formData['inLanguage'],
 			'topic' => $formData['topic'],
 			'subtopics' => $formData['subtopics'],
 			'contentLocation' => $formData['contentLocation'],
-			'claimTextNative' => $formData['claimTextNative'],
-			'claimText' => $formData['claimText'],
-			'rating' => $formData['rating'],
+			'claimReviewedNative' => $formData['claimReviewedNative'],
+			'claimReviewed' => $formData['claimReviewed'],
+			'reviewRating' => $formData['reviewRating'],
 			'multiclaim' => $formData['multiclaim'],
-			'distortion' => $formData['distortion'],
+			'distortionType' => $formData['distortionType'],
 			'aiVerification' => $formData['aiVerification'],
 			'harm' => $formData['harm'],
 			'harmEscalation' => $formData['harmEscalation'],
 			'evidences' => $formData['evidences'],
-			'claimAppearances' => $formData['claimAppearances']
+			'claimAppearances' => array_map(function($appearance) {
+				return array_merge($appearance, [
+					'difussionFormat' => $appearance['difussionFormat'],
+					'actionTaken' => $appearance['actionTaken']
+				]);
+			}, $formData['claimAppearances'] ?? []),
+			'associatedClaimReview' => $formData['associatedClaimReview'] ?? []
 		]);
 
 		update_post_meta($post_id, '_ee24_repository', $data);
