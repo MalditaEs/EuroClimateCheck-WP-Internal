@@ -8,8 +8,8 @@
 function euroclimatecheck_add_menu_to_settings()
 {
     add_options_page(
-        'Claim Review + EE24 Repository Settings',
-        'Claim Review + EE24 Repository Settings',
+        'EuroClimateCheck Repository Settings',
+        'EuroClimateCheck Repository Settings',
         'manage_options',
         'fact-check',
         'euroclimatecheck_options_page'
@@ -28,7 +28,7 @@ function euroclimatecheck_options_page()
 {
     ?>
     <div class="wrap">
-        <h1><?php _e('Claim Review + EE24 Repository - Options/Setup', 'claimreview'); ?></h1>
+        <h1><?php _e('EuroClimateCheck Repository - Options/Setup', 'claimreview'); ?></h1>
         <form method="post" action="options.php">
             <?php
             // This prints out all hidden setting fields
@@ -55,12 +55,12 @@ function euroclimatecheck_register_settings()
     register_setting('claimreviewee24-options', 'cr-organisation-min-number-rating');
     register_setting('claimreviewee24-options', 'cr-organisation-max-number-rating');
     register_setting('claimreviewee24-options', 'cr-post-types');
-    register_setting('claimreviewee24-options', 'ee24-apikey');
-    register_setting('claimreviewee24-options', 'ee24-domain');
-    register_setting('claimreviewee24-options', 'ee24-endpoint');
-    register_setting('claimreviewee24-options', 'ee24-country');
-    register_setting('claimreviewee24-options', 'ee24-language');
-    register_setting('claimreviewee24-options', 'ee24-compat');
+    register_setting('claimreviewee24-options', 'euroclimatecheck-apikey');
+    register_setting('claimreviewee24-options', 'euroclimatecheck-domain');
+    register_setting('claimreviewee24-options', 'euroclimatecheck-endpoint');
+    register_setting('claimreviewee24-options', 'euroclimatecheck-country');
+    register_setting('claimreviewee24-options', 'euroclimatecheck-language');
+    register_setting('claimreviewee24-options', 'euroclimatecheck-compat');
 }
 
 add_action('admin_init', 'euroclimatecheck_register_settings');
@@ -156,7 +156,7 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'ee24',
-        array('name' => 'ee24-apikey', 'label_for' => 'API Key', 'extra-text' => 'The Repository API Key provided.')
+        array('name' => 'euroclimatecheck-apikey', 'label_for' => 'API Key', 'extra-text' => 'The Repository API Key provided.')
     );
 
     add_settings_field(
@@ -165,7 +165,7 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'ee24',
-        array('name' => 'ee24-domain', 'label_for' => 'Domain', 'extra-text' => 'The domain of your organization, as provided by the Repository.')
+        array('name' => 'euroclimatecheck-domain', 'label_for' => 'Domain', 'extra-text' => 'The domain of your organization, as provided by the Repository.')
     );
 
     add_settings_field(
@@ -174,28 +174,28 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck_text_field_callback_function',
         'fact-check',
         'ee24',
-        array('name' => 'ee24-endpoint', 'label_for' => 'EE24 Repository endpoint', 'extra-text' => 'Endpoint of the repository.')
+        array('name' => 'euroclimatecheck-endpoint', 'label_for' => 'EE24 Repository endpoint', 'extra-text' => 'Endpoint of the repository.')
     );
 
     add_settings_field(
-        'ee24-country',
+        'euroclimatecheck-country',
         __('Country of Organization', 'claimreview'),
         'euroclimatecheck_select_field_callback_function',
         'fact-check',
         'ee24',
-        array('name' => 'ee24-country', 'label_for' => 'Country of the organization', 'extra-text' => 'The country of your organization.', 'values' => countries()));
+        array('name' => 'euroclimatecheck-country', 'label_for' => 'Country of the organization', 'extra-text' => 'The country of your organization.', 'values' => countries()));
 
 
     add_settings_field(
-        'ee24-language',
+        'euroclimatecheck-language',
         __('Language of Organization', 'claimreview'),
         'euroclimatecheck_select_field_callback_function',
         'fact-check',
         'ee24',
-        array('name' => 'ee24-language', 'label_for' => 'Language of the organization', 'extra-text' => 'The default language of your organization.', 'values' => languages()));
+        array('name' => 'euroclimatecheck-language', 'label_for' => 'Language of the organization', 'extra-text' => 'The default language of your organization.', 'values' => languages()));
 
     add_settings_field(
-        'ee24-compat',
+        'euroclimatecheck-compat',
         __('Enable compat mode', 'claimreview'),
         'euroclimatecheck_compat_mode',
         'fact-check',
@@ -279,7 +279,7 @@ function euroclimatecheck_display_settings_callback()
 
 function euroclimatecheck_compat_mode()
 {
-    $option = get_option('ee24-compat');
+    $option = get_option('euroclimatecheck-compat');
 
     ?>
 

@@ -9,13 +9,13 @@ function euroclimatecheck_admin_style() {
 
 	$plugin_data = get_plugin_data( __FILE__ );
 
-//	if ( get_option( 'ee24-compat' ) ) {
-//		wp_register_style( 'euroclimatecheck_admin_css', EE24_PLUGIN_URL . '/css/styles.css', false, $plugin_data['Version'] );
+//	if ( get_option( 'euroclimatecheck-compat' ) ) {
+//		wp_register_style( 'euroclimatecheck_admin_css', EUROCLIMATECHECK_PLUGIN_URL . '/css/styles.css', false, $plugin_data['Version'] );
 //		wp_enqueue_style( 'euroclimatecheck_admin_css' );
 //	} else {
 //	}
 
-	wp_register_style( 'euroclimatecheck_admin_css', EE24_PLUGIN_URL . '/EuroClimateCheck/dist/euroclimatecheck.css', false, $plugin_data['Version'] );
+	wp_register_style( 'euroclimatecheck_admin_css', EUROCLIMATECHECK_PLUGIN_URL . '/EuroClimateCheck/dist/euroclimatecheck.css', false, $plugin_data['Version'] );
 	wp_enqueue_style( 'euroclimatecheck_admin_css' );
 
 	wp_enqueue_script( 'media-upload' );
@@ -34,7 +34,7 @@ function euroclimatecheck_admin_style() {
 	// Register the built Vue component
 	wp_register_script(
 		'euroclimatecheck_vue_component',
-		EE24_PLUGIN_URL . '/EuroClimateCheck/dist/euroclimatecheck.umd.cjs', // Update path to built file
+		EUROCLIMATECHECK_PLUGIN_URL . '/EuroClimateCheck/dist/euroclimatecheck.umd.cjs', // Update path to built file
 		array('vue'),
 		'1.0.0',
 		true
@@ -48,7 +48,7 @@ function euroclimatecheck_admin_style() {
 	wp_enqueue_style( 'euroclimatecheck_fontawesome' );
 
 
-	wp_register_script( 'euroclimatecheck_admin_js', EE24_PLUGIN_URL . '/js/claim-review-admin.js', array(
+	wp_register_script( 'euroclimatecheck_admin_js', EUROCLIMATECHECK_PLUGIN_URL . '/js/claim-review-admin.js', array(
 		'jquery',
 		'jquery-ui-core',
 		'jquery-ui-datepicker',

@@ -2,7 +2,7 @@
 
 class EE24Api {
 	private function getEndpoint() {
-		return get_option( 'ee24-endpoint' );
+		return get_option( 'euroclimatecheck-endpoint' );
 	}
 
 	private function initializeCurl( $endpoint, $headers, $method, $data ) {
@@ -65,7 +65,7 @@ class EE24Api {
 			'contentLocation' => array_map(function($location) {
 				return $location['code'];
 			}, $data['contentLocation'] ?? []),
-			'countryOfOrigin' => get_option('ee24-country'),
+			'countryOfOrigin' => get_option('euroclimatecheck-country'),
 			'evidences' => [],
 			'claimReview' => []
 		];

@@ -4,8 +4,8 @@
  *
  * @return void
  */
-function ee24_notices() {
-	$namespace = 'api-eea24/v1';
+function euroclimatecheck_notices() {
+	$namespace = 'api-euroclimatecheck/v1';
 	$route     = 'repository-status';
 	register_rest_route(
 		$namespace,
@@ -20,7 +20,7 @@ function ee24_notices() {
 	);
 }
 
-add_action( 'rest_api_init', 'ee24_notices' );
+add_action( 'rest_api_init', 'euroclimatecheck_notices' );
 add_action('current_screen', 'detecting_current_screen');
 
 function detecting_current_screen()
@@ -55,7 +55,7 @@ function repository_status_script() {
         function checkNotificationAfterPublish() {
             const postId = wp.data.select("core/editor").getCurrentPostId();
             const url = wp.url.addQueryArgs(
-                '/wp-json/api-eea24/v1/repository-status',
+                '/wp-json/api-euroclimatecheck/v1/repository-status',
                 {id: postId},
             );
             wp.apiFetch({
@@ -86,11 +86,11 @@ function get_repository_request_status() {
 			wp_unslash( $_GET['id'] )
 		);
 
-		$errorTransient   = get_transient( "ee24_error" );
-		$successTransient = get_transient( "ee24_success" );
+		$errorTransient   = get_transient( "euroclimatecheck_error" );
+		$successTransient = get_transient( "euroclimatecheck_success" );
 
 		if ( $errorTransient ) {
-			delete_transient( 'ee24_error' );
+			delete_transient( 'euroclimatecheck_error' );
 
 			return new \WP_REST_Response(
 				array(
@@ -101,7 +101,7 @@ function get_repository_request_status() {
 		}
 
 		if ( $successTransient ) {
-			delete_transient( 'ee24_success' );
+			delete_transient( 'euroclimatecheck_success' );
 
 			return new \WP_REST_Response(
 				array(

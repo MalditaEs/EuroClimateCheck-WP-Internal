@@ -22,18 +22,18 @@ function euroclimatecheck_add_custom_box() {
 
 	foreach ( $screens as $screen ) {
 		add_meta_box(
-			'euroclimatecheck_metabox',           // Unique ID
+			'euroclimatecheck_claimreview_metabox',           // Unique ID
 			__( 'Claim Review Schema', 'claimreview' ),  // Box title
-			'euroclimatecheck_custom_box_html',  // Content callback, must be of type callable
+			'euroclimatecheck_claimreview_custom_box_html',  // Content callback, must be of type callable
 			$screen,                   // Post type
 			'normal',
 			'high'
 		);
 
 		add_meta_box(
-			'ee24_repository_metabox',           // Unique ID
+			'euroclimatecheck_repository_metabox',           // Unique ID
 			__( 'EuroClimateCheck Repository', 'ee24' ),  // Box title
-			'ee24_custom_box_html',  // Content callback, must be of type callable
+			'euroclimatecheck_custom_box_html',  // Content callback, must be of type callable
 			$screen,                   // Post type
 			'normal',
 			'high'
@@ -51,7 +51,7 @@ add_action( 'add_meta_boxes', 'euroclimatecheck_add_custom_box' );
  *
  * @return void
  */
-function euroclimatecheck_custom_box_html( $post ) {
+function euroclimatecheck_claimreview_custom_box_html( $post ) {
 
 	$claims = get_post_meta( $post->ID, '_fullfact_all_claims', true );
 	$x      = 1;
@@ -84,7 +84,7 @@ function euroclimatecheck_custom_box_html( $post ) {
  *
  * @return void
  */
-function ee24_custom_box_html( $post ) {
+function euroclimatecheck_custom_box_html( $post ) {
 
 	$ee24Metadata = get_post_meta( $post->ID, '_ee24_repository', true );
 	wp_nonce_field( basename( __FILE__ ), 'ee24_nonce' );
@@ -99,9 +99,9 @@ function ee24_build_claim_box( $data ) {
     <?php
 		echo json_encode([
 			"data" => $data,
-			"apikey" => get_option('ee24-apikey'),
-			"domain" => get_option('ee24-domain'),
-			"language" => get_option('ee24-language')
+			"apikey" => get_option('euroclimatecheck-apikey'),
+			"domain" => get_option('euroclimatecheck-domain'),
+			"language" => get_option('euroclimatecheck-language')
 		]);
 		?>
 </script>
@@ -121,10 +121,10 @@ function ee24_build_claim_box( $data ) {
 	<?php
 
 
-	$apikey = get_option( 'ee24-apikey' );
-	$domain = get_option( 'ee24-domain' );
+	$apikey = get_option( 'euroclimatecheck-apikey' );
+	$domain = get_option( 'euroclimatecheck-domain' );
 
-	return "<div id='ee24-data' data-endpoint='" . get_option( 'ee24-endpoint' ) . "' data-apikey='$apikey' data-domain='$domain'></div>";
+	return "<div id='euroclimatecheck-data' data-endpoint='" . get_option( 'euroclimatecheck-endpoint' ) . "' data-apikey='$apikey' data-domain='$domain'></div>";
 }
 
 /**
@@ -424,8 +424,8 @@ function ee24_publish_data( $post_id, $post ) {
 	$api = new EE24Api();
 
 	$headers = [
-		'X-API-KEY' => get_option( 'ee24-apikey' ),
-		'X-DOMAIN'  => get_option( 'ee24-domain' ),
+		'X-API-KEY' => get_option( 'euroclimatecheck-apikey' ),
+		'X-DOMAIN'  => get_option( 'euroclimatecheck-domain' ),
 	];
 
 	// Serialize dates
@@ -470,9 +470,9 @@ add_action( 'admin_notices', 'ee24_admin_notice' );
 
 function updateEE24Metadata($post_id) {
 	// Check if our form data exists
-	if (array_key_exists('ee24-form-data', $_POST)) {
+	if (array_key_exists('euroclimatecheck-form-data', $_POST)) {
 		// Decode the JSON data
-		$formData = json_decode(stripslashes($_POST['ee24-form-data']), true);
+		$formData = json_decode(stripslashes($_POST['euroclimatecheck-form-data']), true);
 
 		if ($formData === null) {
 			// JSON decode failed

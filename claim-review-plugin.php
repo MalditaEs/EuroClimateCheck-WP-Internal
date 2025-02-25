@@ -32,7 +32,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-define( 'EE24_PLUGIN_PATH', dirname( __FILE__ ) );
-define( 'EE24_PLUGIN_URL', plugins_url( '', __FILE__ ) );
+define( 'EUROCLIMATECHECK_PLUGIN_PATH', dirname( __FILE__ ) );
+define( 'EUROCLIMATECHECK_PLUGIN_URL', plugins_url( '', __FILE__ ) );
 
-require_once EE24_PLUGIN_PATH . '/inc/core.php';
+require_once EUROCLIMATECHECK_PLUGIN_PATH . '/inc/core.php';

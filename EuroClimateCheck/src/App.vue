@@ -136,7 +136,7 @@ onMounted(async () => {
   }
 });
 
-const articleTypes = ['Factcheck', 'Prebunk'];
+const articleTypes = ['Factcheck', 'Prebunk', 'None'];
 
 const allCountries = {
   "AF": "Afghanistan",
@@ -668,9 +668,6 @@ watch(data, (newData) => {
     <!-- Content -->
     <div v-else>
 
-      {{ data }}
-      {{ apiConfig }}
-
       <header class="ec:mb-4 ec:bg-slate-100 ec:p-4 ec:rounded-lg">
         <img
             alt="EuroClimateCheck logo"
@@ -807,8 +804,15 @@ watch(data, (newData) => {
 
                 <div class="ec:w-full">
                   <div><span>Claim text in English</span></div>
-                  <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewed"
-                             placeholder="Claim text translated to English"></InputText>
+                  <div class="ec:flex ec:items-center ec:gap-2">
+                    <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewed"
+                             placeholder="Claim text, translated to English"></InputText>
+                    <TranslateButton style="width: 20% !important;"
+                                     :getSourceText="() => data.claimReviewedNative"
+                                     :updateTargetField="(text) => data.claimReviewed = text"
+                                     :apiConfig="apiConfig"
+                    />
+                  </div>
                 </div>
 
                 <div class="ec:w-1/3">
@@ -931,14 +935,14 @@ watch(data, (newData) => {
                       <DatePicker v-model="appearance.appearanceDate" showIcon iconDisplay="input"/>
                     </div>
 
-                    <div class="ec:w-1/4">
+                    <div class="ec:w-1/4 hidden">
                       <div><span>Action taken by platform?</span></div>
                       <SelectButton v-model="appearance.actionTaken" :options="yesNoOptions"/>
                     </div>
 
                   </div>
 
-                  <div class="ec:w-full">
+                  <div class="ec:w-full hidden">
                     <div><span>Appearance body</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="appearance.appearanceBody"/>
@@ -997,21 +1001,21 @@ watch(data, (newData) => {
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Answer</span></div>
+                    <div><span>Answer</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What is the response or conclusion regarding the specific question?</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.answer"
                     />
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Source URL</span></div>
+                    <div><span>Source URL</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Where can the evidence supporting this answer be found?</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.url"
                     />
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Type of evidence</span></div>
+                    <div><span>Type of evidence provided</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What type of evidence was used to support the claim verification?</span></div>
                     <Select filter v-model="evidence.type"
                             :options="evidenceTypes"
                             placeholder="Select evidence type"
