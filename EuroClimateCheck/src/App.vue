@@ -97,7 +97,7 @@ onMounted(async () => {
         apikey: parsedData.apikey,
         domain: parsedData.domain,
         language: parsedData.language,
-        endpoint: document.getElementById('ee24-data')?.dataset?.endpoint
+        endpoint: document.getElementById('euroclimatecheck-data')?.dataset?.endpoint
       };
 
       // Convertir fechas string a objetos Date en claimAppearances
@@ -637,7 +637,7 @@ const addClaimAppearance = () => {
 };
 
 watch(data, (newData) => {
-  const hiddenInput = document.getElementById('ee24-form-data');
+  const hiddenInput = document.getElementById('euroclimatecheck-form-data');
   if (hiddenInput) {
     hiddenInput.value = JSON.stringify(newData);
   }
@@ -650,8 +650,8 @@ watch(data, (newData) => {
   <div class="ec:p-4">
     <input
         type="hidden"
-        id="ee24-form-data"
-        name="ee24-form-data"
+        id="euroclimatecheck-form-data"
+        name="euroclimatecheck-form-data"
         :value="JSON.stringify(data)"
     />
 
