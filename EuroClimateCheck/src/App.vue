@@ -97,7 +97,7 @@ onMounted(async () => {
         apikey: parsedData.apikey,
         domain: parsedData.domain,
         language: parsedData.language,
-        endpoint: document.getElementById('euroclimatecheck-data')?.dataset?.endpoint
+        endpoint: parsedData.endpoint
       };
 
       // Convertir fechas string a objetos Date en claimAppearances

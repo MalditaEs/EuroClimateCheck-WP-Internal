@@ -65,9 +65,7 @@ class EE24Api {
 			'contentLocation' => array_map(function($location) {
 				return $location['code'];
 			}, $data['contentLocation'] ?? []),
-			'countryOfOrigin' => get_option('euroclimatecheck-country'),
-			'evidences' => [],
-			'claimReview' => []
+			'countryOfOrigin' => get_option('euroclimatecheck-country')
 		];
 
 		// Add Factcheck specific fields if type is Factcheck
@@ -77,7 +75,7 @@ class EE24Api {
 				return [
 					'url' => $appearance['url'],
 					'archivedAt' => $appearance['archivedAt'],
-					'difussionFormat' => $appearance['diffusionFormat'], // Nota: hay un typo en la API ('difussion' vs 'diffusion')
+					'difussionFormat' => $appearance['difussionFormat'],
 					'platform' => $appearance['platform'],
 					'appearanceDate' => $appearance['appearanceDate'],
 					'views' => intval($appearance['views']),
@@ -93,14 +91,14 @@ class EE24Api {
 			}, $data['claimAppearances'] ?? []);
 
 			$transformed['claimReview'] = [
-				'claimReviewed' => $data['claimText'],
-				'claimReviewedNative' => $data['claimTextNative'],
+				'claimReviewed' => $data['claimReviewed'],
+				'claimReviewedNative' => $data['claimReviewedNative'],
 				'multiclaim' => filter_var($data['multiclaim'], FILTER_VALIDATE_BOOLEAN),
-				'distortionType' => $data['distortion'],
+				'distortionType' => $data['distortionType'],
 				'aiVerification' => $data['aiVerification'],
 				'harm' => filter_var($data['harm'], FILTER_VALIDATE_BOOLEAN),
 				'harmEscalation' => $data['harmEscalation'],
-				'reviewRating' => $data['rating'],
+				'reviewRating' => $data['reviewRating'],
 				'appearances' => $appearances,
 				'associatedClaimReview' => [] // Añadir si se implementa en el futuro
 			];
@@ -135,11 +133,6 @@ class EE24Api {
 
 	public function sendPatchRequest( $externalId, $data, $headers = [] ) {
 		$transformedData = $this->transformDataForApi($data);
-
-		if($transformedData['type'] === 'Prebunk'){
-			unset($transformedData['claimReview']);
-			unset($transformedData['evidences']);
-		}
 
 		$curl       = $this->initializeCurl( $this->getEndpoint() . '/' . $externalId, $headers, 'PATCH', $transformedData );
 		$response   = curl_exec( $curl );
