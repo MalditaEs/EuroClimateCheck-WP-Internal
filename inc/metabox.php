@@ -77,7 +77,7 @@ function ee24_build_claim_box( $data ) {
  *
  * @return string
  */
-function claimbox_get_arrow() {
+function ecc_claimbox_get_arrow() {
 	return '<svg class="claim-review-arrow" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" focusable="false"><g><path fill="none" d="M0,0h24v24H0V0z"></path></g><g><path d="M7.41,8.59L12,13.17l4.59-4.58L18,10l-6,6l-6-6L7.41,8.59z"></path></g></svg>';
 }
 
