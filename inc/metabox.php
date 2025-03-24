@@ -8,7 +8,18 @@ include_once 'EE24Api.php';
  * @return void
  */
 function euroclimatecheck_add_custom_box() {
-	$screens    = array('post');
+	$screens    = array();
+	$post_types = get_option( 'eurofactcheck-post-types' ) ? get_option( 'eurofactcheck-post-types' ) : array( 'post', 'page' );
+
+
+	foreach ( $post_types as $key => $value ) {
+		if ( $value ) {
+			$screentoshow = str_replace( 'eurofactcheck-showon', '', $key );
+			$screens[]    = $screentoshow;
+		}
+	}
+
+
 	foreach ( $screens as $screen ) {
 		add_meta_box(
 			'euroclimatecheck_repository_metabox',           // Unique ID
