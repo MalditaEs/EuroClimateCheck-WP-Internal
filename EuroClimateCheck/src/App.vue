@@ -476,33 +476,40 @@ const subTopic = {
     'Increasing temperatures',
     'Heatwaves',
     'Floods',
-    'Water scarcity'
+    'Water scarcity',
+    'Other'
   ],
   'Transport': [
-    'Electric cars'
+    'Electric cars',
+    'Other'
   ],
   'Renewables': [
     'Wind energy',
     'Solar PV',
-    'Offshore wind energy'
+    'Offshore wind energy',
+    'Other'
   ],
   'Conspiracy theories': [
     'Chemtrails',
     '2030 agenda',
     '15-minute cities',
-    'HAARP'
+    'HAARP',
+    'Other'
   ],
   'Fossil fuels': [
     'Natural gas',
     'Oil',
-    'Coal'
+    'Coal',
+    'Other'
   ],
   'Waste': [
-    'Plastic'
+    'Plastic',
+    'Other'
   ],
   'Other': [
     'Climate change denial',
-    'Meat consumption'
+    'Meat consumption',
+    'Other'
   ]
 };
 
@@ -642,6 +649,13 @@ watch(data, (newData) => {
     hiddenInput.value = JSON.stringify(newData);
   }
 }, {deep: true});
+
+// Add watcher for topic changes
+watch(() => data.value.topic, (newTopic, oldTopic) => {
+  if (oldTopic && newTopic !== oldTopic) {
+    data.value.subtopics = [];
+  }
+});
 
 </script>
 
@@ -835,7 +849,8 @@ watch(data, (newData) => {
                 <div class="ec:w-full">
                   <div><span>AI verification methods</span></div>
                   <MultiSelect filter v-model="data.aiVerification" :options="aiVerificationMethods"
-                               placeholder="Select AI verification methods" class="ec:w-full" :selectAll="false"/>
+                               placeholder="Select AI verification methods" class="ec:w-full" :selectAll="false"
+                               :disabled="data.reviewRating !== 'AI Generated'"/>
                 </div>
 
                 <div class="ec:flex ec:w-full ec:gap-4">
@@ -846,7 +861,7 @@ watch(data, (newData) => {
 
                   <div class="ec:grow">
                     <div><span>Harm escalation</span></div>
-                    <Select filter v-model="data.harmEscalation" :options="harmEscalationLevels"
+                    <Select filter v-model="data.harmEscalation" showClear :options="harmEscalationLevels"
                             placeholder="Select harm escalation" class="ec:w-full"/>
                   </div>
                 </div>

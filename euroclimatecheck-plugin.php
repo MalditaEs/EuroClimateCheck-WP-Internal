@@ -6,9 +6,8 @@
  */
 /*
 Plugin Name: EFCSN EuroClimateCheck Plugin
-Plugin URI: https://github.com/FullFact/claim-review-schema-wordpress-plugin/
-Description: WordPress Plugin to implement the EuroClimateCheck Repository and the ClaimReview Schema.
-Version: 1.0.0
+Description: WordPress Plugin to implement the EuroClimateCheck Repository.
+Version: 1.0.2
 Author: Maldita.es
 Author URI: https://maldita.es
 Tags:

@@ -8,12 +8,7 @@ include_once 'EE24Api.php';
  * @return void
  */
 function euroclimatecheck_add_custom_box() {
-	$screens = array('post', 'page'); // Default post types
-	$enabled_custom_types = get_option('euroclimatecheck-enabled-post-types', array());
-	
-	// Add enabled custom post types
-	$screens = array_merge($screens, $enabled_custom_types);
-
+	$screens    = array('post');
 	foreach ( $screens as $screen ) {
 		add_meta_box(
 			'euroclimatecheck_repository_metabox',           // Unique ID
