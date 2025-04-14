@@ -136,18 +136,26 @@ function ee24_publish_data( $post_id, $post ) {
 		try {
 			$response                    = $api->sendPatchRequest( $publishedData['externalId'], $serializedData, $headers );
 			$publishedData['externalId'] = json_decode( $response )->externalId;
-			set_transient( "ee24_success", "Repository ID: " . $publishedData['externalId'], 25 );
+			// Set both transient naming patterns for compatibility
+set_transient( "ee24_success", "Repository ID: " . $publishedData['externalId'], 60 );
+set_transient( "euroclimatecheck_success", "Repository ID: " . $publishedData['externalId'], 60 );
 		} catch ( \Throwable $e ) {
-			set_transient( "ee24_error", $e->getMessage(), 25 );
+			// Set both transient naming patterns for compatibility
+set_transient( "ee24_error", $e->getMessage(), 60 );
+set_transient( "euroclimatecheck_error", $e->getMessage(), 60 );
 		}
 	} else {
 		// Doesn't exist in the Repository
 		try {
 			$response                    = $api->sendPostRequest( $serializedData, $headers );
 			$publishedData['externalId'] = json_decode( $response )->externalId;
-			set_transient( "ee24_success", "Repository ID: " . $publishedData['externalId'], 25 );
+			// Set both transient naming patterns for compatibility
+set_transient( "ee24_success", "Repository ID: " . $publishedData['externalId'], 60 );
+set_transient( "euroclimatecheck_success", "Repository ID: " . $publishedData['externalId'], 60 );
 		} catch ( \Throwable $e ) {
-			set_transient( "ee24_error", $e->getMessage(), 25 );
+			// Set both transient naming patterns for compatibility
+set_transient( "ee24_error", $e->getMessage(), 60 );
+set_transient( "euroclimatecheck_error", $e->getMessage(), 60 );
 		}
 	}
 
@@ -213,9 +221,9 @@ function updateEE24Metadata($post_id) {
 
 
 function ee24_admin_notice() {
-	// Get the API response stored earlier
-	$error   = get_transient( 'ee24_error' );
-	$success = get_transient( 'ee24_success' );
+	// Get the API response stored earlier - check both transient naming patterns
+	$error   = get_transient( 'ee24_error' ) ?: get_transient( 'euroclimatecheck_error' );
+	$success = get_transient( 'ee24_success' ) ?: get_transient( 'euroclimatecheck_success' );
 	$validationErrors = get_transient( 'ee24_validation_errors' );
 
 	if ( $error === false && $success === false && $validationErrors === false ) {
@@ -245,14 +253,19 @@ function ee24_admin_notice() {
 	}
 
 	$post = get_post();
+	// For classic editor, clear the transients after showing
 	if ( $post && ! use_block_editor_for_post( $post ) ) {
 		if ( $error ) {
+			// Clean up both possible transient names
 			delete_transient( 'ee24_error' );
+			delete_transient( 'euroclimatecheck_error' );
 			if ($validationErrors) {
 				delete_transient( 'ee24_validation_errors' );
 			}
 		} else if ( $success ) {
+			// Clean up both possible transient names
 			delete_transient( 'ee24_success' );
+			delete_transient( 'euroclimatecheck_success' );
 		}
 	}
 }

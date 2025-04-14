@@ -86,27 +86,44 @@ function get_repository_request_status() {
 			wp_unslash( $_GET['id'] )
 		);
 
-		$errorTransient   = get_transient( "euroclimatecheck_error" );
-		$successTransient = get_transient( "euroclimatecheck_success" );
+		// Check both transient naming patterns
+		$errorTransient   = get_transient( "euroclimatecheck_error" ) ?: get_transient( "ee24_error" );
+		$successTransient = get_transient( "euroclimatecheck_success" ) ?: get_transient( "ee24_success" );
+		$validationErrors = get_transient( "ee24_validation_errors" );
 
 		if ( $errorTransient ) {
+			// Clean up both possible transient names
 			delete_transient( 'euroclimatecheck_error' );
+			delete_transient( 'ee24_error' );
+
+			if ( $validationErrors ) {
+				delete_transient( 'ee24_validation_errors' );
+			}
+
+			$errorMessage = "EuroClimateCheck – " . $errorTransient;
+
+			// Include validation errors if they exist
+			if ( $validationErrors && is_array($validationErrors) && !empty($validationErrors) ) {
+				$errorMessage .= " Missing required fields: " . implode(", ", $validationErrors);
+			}
 
 			return new \WP_REST_Response(
 				array(
 					'type'    => 'error',
-					'message' => wp_unslash( "Error exporting to the EE24 Repository: " . $errorTransient ),
+					'message' => wp_unslash( $errorMessage ),
 				)
 			);
 		}
 
 		if ( $successTransient ) {
+			// Clean up both possible transient names
 			delete_transient( 'euroclimatecheck_success' );
+			delete_transient( 'ee24_success' );
 
 			return new \WP_REST_Response(
 				array(
 					'type'    => 'success',
-					'message' => wp_unslash( "The EE24 Repository has been updated. " . $successTransient ),
+					'message' => wp_unslash( "The EuroClimateCheck Repository has been updated. " . $successTransient ),
 				)
 			);
 		}
