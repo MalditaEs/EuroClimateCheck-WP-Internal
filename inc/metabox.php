@@ -209,7 +209,8 @@ function updateEE24Metadata($post_id) {
 					'actionTaken' => $appearance['actionTaken']
 				]);
 			}, $formData['claimAppearances'] ?? []),
-			'associatedClaimReview' => $formData['associatedClaimReview'] ?? []
+			'associatedClaimReview' => $formData['associatedClaimReview'] ?? [],
+			'alternativeImage' => $formData['alternativeImage'] ?? ''
 		]);
 
 		update_post_meta($post_id, '_euroclimatecheck_repository', $data);
@@ -380,7 +381,8 @@ function ee24_validate_data_rest($request) {
         'harmEscalation' => $formData['harmEscalation'],
         'evidences' => $formData['evidences'],
         'claimAppearances' => $formData['claimAppearances'],
-        'associatedClaimReview' => $formData['associatedClaimReview'] ?? []
+        'associatedClaimReview' => $formData['associatedClaimReview'] ?? [],
+        'alternativeImage' => $formData['alternativeImage'] ?? ''
     );
 
     // Validate the data

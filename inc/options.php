@@ -11,7 +11,7 @@ function euroclimatecheck_add_menu_to_settings()
         'EuroClimateCheck Repository Settings',
         'EuroClimateCheck Repository Settings',
         'manage_options',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck_options_page'
     );
 }
@@ -33,7 +33,7 @@ function euroclimatecheck_options_page()
             <?php
             // This prints out all hidden setting fields
             settings_fields('claimrevieweuroclimatecheck-options');
-            do_settings_sections('fact-check');
+            do_settings_sections('euroclimatecheck');
             submit_button();
             ?>
         </form>
@@ -76,14 +76,14 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck',
         __('EuroClimateCheck - Connection with the Repository', 'claimreview'),
         'euroclimatecheck_section_callback',
-        'fact-check'
+        'euroclimatecheck'
     );
 
     add_settings_field(
         'euroclimatecheck_api-key',
         __('API Key', 'claimreview'),
         'euroclimatecheck_text_field_callback_function',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck',
         array('name' => 'euroclimatecheck-apikey', 'label_for' => 'API Key', 'extra-text' => 'The Repository API Key provided.')
     );
@@ -92,7 +92,7 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck_domain',
         __('Domain', 'claimreview'),
         'euroclimatecheck_text_field_callback_function',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck',
         array('name' => 'euroclimatecheck-domain', 'label_for' => 'Domain', 'extra-text' => 'The domain of your organization, as provided by the Repository.')
     );
@@ -101,7 +101,7 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck_endpoint',
         __('euroclimatecheck Repository endpoint', 'claimreview'),
         'euroclimatecheck_text_field_callback_function',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck',
         array('name' => 'euroclimatecheck-endpoint', 'label_for' => 'euroclimatecheck Repository endpoint', 'extra-text' => 'Endpoint of the repository.')
     );
@@ -110,7 +110,7 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck-country',
         __('Country of Organization', 'claimreview'),
         'euroclimatecheck_select_field_callback_function',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck',
         array('name' => 'euroclimatecheck-country', 'label_for' => 'Country of the organization', 'extra-text' => 'The country of your organization.', 'values' => countries()));
 
@@ -119,7 +119,7 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck-language',
         __('Language of Organization', 'claimreview'),
         'euroclimatecheck_select_field_callback_function',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck',
         array('name' => 'euroclimatecheck-language', 'label_for' => 'Language of the organization', 'extra-text' => 'The default language of your organization.', 'values' => languages()));
 
@@ -127,14 +127,14 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck_post_types',
         __('EuroClimateCheck - Post Type Configuration', 'claimreview'),
         'euroclimatecheck_post_types_section_callback',
-        'fact-check'
+        'euroclimatecheck'
     );
 
     add_settings_field(
         'euroclimatecheck_enabled_post_types',
         __('Enable ClaimBox in Post Types', 'claimreview'),
         'euroclimatecheck_post_types_callback',
-        'fact-check',
+        'euroclimatecheck',
         'euroclimatecheck_post_types'
     );
 }

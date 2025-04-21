@@ -10,6 +10,7 @@ import Toast from 'primevue/toast';
 import Button from 'primevue/button';
 import DatePicker from 'primevue/datepicker';
 import TranslateButton from './components/TranslateButton.vue';
+import ImageUploader from './components/ImageUploader.vue';
 
 const data = ref({
   type: null,
@@ -22,6 +23,7 @@ const data = ref({
   subtopics: [],
   contentLocation: [],
   inLanguage: null,
+  alternativeImage: '',
 
   claimReviewed: '',
   claimReviewedNative: '',
@@ -794,6 +796,13 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                       <Chip :label="keyword" removable/>
                     </template>
                   </div>
+                </div>
+              </div>
+
+              <div class="ec:flex ec:flex-col ec:flex-wrap ec:gap-4 ec:mt-8">
+                <div class="ec:w-full">
+                  <div><span>Alternative image</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Optional. If set, this image will be used instead of the featured image.</span></div>
+                  <ImageUploader v-model="data.alternativeImage" />
                 </div>
               </div>
 

@@ -46,6 +46,9 @@ class EE24Api {
 	}
 
 	private function transformDataForApi($data) {
+		// Determine the image URL: use alternativeImage if available, otherwise fallback to featured image
+		$imageUrl = !empty($data['alternativeImage']) ? $data['alternativeImage'] : $data['image'];
+
 		// Transform base data
 		$transformed = [
 			'type' => $data['type'],
@@ -55,7 +58,7 @@ class EE24Api {
 			'datePublished' => $data['datePublished'],
 			'publisher' => get_bloginfo('name'),
 			'publisherUrl' => parse_url(get_bloginfo('url'), PHP_URL_HOST),
-			'image' => $data['image'],
+			'image' => $imageUrl, // Use the determined image URL
 			'keywords' => $data['keywords'],
 			'inLanguage' => $data['inLanguage']['code'],
 			'topic' => $data['topic'],
