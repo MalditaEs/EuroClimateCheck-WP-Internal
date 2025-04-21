@@ -1053,6 +1053,11 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
         </template>
 
       </main>
+
+      <footer class="ec:mt-8 ec:pt-4 ec:border-t ec:border-slate-200 ec:text-center ec:text-sm ec:text-slate-600">
+        Developed with 🖤 by <a href="https://maldita.es" target="_blank" rel="noopener noreferrer" class="ec:text-emerald-700 hover:ec:underline">Maldita.es</a>
+      </footer>
+
     </div>
   </div>
 </template>
