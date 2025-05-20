@@ -538,6 +538,10 @@ const addEvidence = () => {
   });
 };
 
+const removeEvidence = (index) => {
+  data.value.evidences.splice(index, 1);
+};
+
 const ratingOptions = [
   'False',
   'Partly false',
@@ -645,6 +649,10 @@ const addClaimAppearance = () => {
   });
 };
 
+const removeClaimAppearance = (index) => {
+  data.value.claimAppearances.splice(index, 1);
+};
+
 watch(data, (newData) => {
   const hiddenInput = document.getElementById('euroclimatecheck-form-data');
   if (hiddenInput) {
@@ -696,7 +704,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
       <main class="ec:bg-white ec:gap-4 ec:flex ec:flex-col">
 
         <div>
-          <div><span>Type of article</span></div>
+          <div><span>Type of article *</span></div>
           <SelectButton
               v-model="data.type"
               :options="articleTypes"
@@ -714,7 +722,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
               <div class="ec:flex ec:flex-wrap ec:gap-4">
 
                 <div class="ec:w-full">
-                  <div><span>Headline</span></div>
+                  <div><span>Headline *</span></div>
                   <InputText
                       class="ec:w-full ec:!border ec:!border-slate-300"
                       v-model="data.headlineNative"
@@ -724,7 +732,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
 
                 <div class="ec:w-full">
                   <div class="ec:flex ec:flex-row ec:gap-2 ec:items-center">
-                    <span>Headline in English</span>
+                    <span>Headline in English *</span>
                   </div>
                   <div class="ec:flex ec:items-center ec:gap-2">
                     <InputText
@@ -743,7 +751,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
 
               <div class="ec:flex ec:flex-wrap ec:gap-4 ec:mt-8">
                 <div class="ec:w-1/4">
-                  <div><span>Language of the article</span></div>
+                  <div><span>Language of the article *</span></div>
                   <Select v-model="data.inLanguage"
                           :options="cleanLanguages"
                           filter
@@ -764,14 +772,14 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
               <div class="ec:flex ec:flex-wrap ec:gap-4 ec:mt-8">
 
                 <div class="ec:w-2/5">
-                  <div><span>Topic</span></div>
+                  <div><span>Topic *</span></div>
                   <Select v-model="data.topic" :options="topics" filter
                           placeholder="Select a topic"
                           class="ec:w-full"/>
                 </div>
 
                 <div class="ec:flex-grow">
-                  <div><span>Subtopics</span></div>
+                  <div><span>Subtopics *</span></div>
                   <MultiSelect class="ec:w-full" v-model="data.subtopics" filter :options="subTopic[data.topic]"
                                :select-all="false" placeholder="Select one or more subtopics"></MultiSelect>
                 </div>
@@ -820,13 +828,13 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
             <template #content>
               <div class="ec:flex ec:flex-wrap ec:gap-4">
                 <div class="ec:w-full">
-                  <div><span>Claim text in native language</span></div>
+                  <div><span>Claim text in native language *</span></div>
                   <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewedNative"
                              placeholder="Original claim text"></InputText>
                 </div>
 
                 <div class="ec:w-full">
-                  <div><span>Claim text in English</span></div>
+                  <div><span>Claim text in English *</span></div>
                   <div class="ec:flex ec:items-center ec:gap-2">
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewed"
                              placeholder="Claim text, translated to English"></InputText>
@@ -839,7 +847,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                 </div>
 
                 <div class="ec:w-1/3">
-                  <div><span>Rating</span></div>
+                  <div><span>Rating *</span></div>
                   <Select filter v-model="data.reviewRating" :options="ratingOptions" placeholder="Select rating"
                           class="ec:w-full"/>
                 </div>
@@ -850,7 +858,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                 </div>
 
                 <div class="ec:w-full">
-                  <div><span>Distortion types</span></div>
+                  <div><span>Distortion types *</span></div>
                   <MultiSelect filter v-model="data.distortionType" :options="distortionTypes"
                                placeholder="Select distortion types" class="ec:w-full" :selectAll="false"/>
                 </div>
@@ -893,9 +901,16 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                 <div v-for="(appearance, index) in data.claimAppearances" :key="index"
                      class="ec:flex ec:flex-col ec:gap-4 ec:p-4 ec:ml-4 ec:border-l-2 ec:border-rose-900">
 
+                  <div class="ec:flex ec:justify-between ec:items-center">
+                    <h3 class="ec:text-lg ec:font-semibold">Claim Appearance #{{ index + 1 }}</h3>
+                    <Button @click="removeClaimAppearance(index)" severity="danger" size="small" class="ec:w-fit">
+                      <i class="fa-solid fa-trash ec:mr-2"></i> Remove
+                    </Button>
+                  </div>
+
                   <div class="ec:flex ec:gap-4">
                     <div class="ec:w-1/2">
-                      <div><span>Platform</span></div>
+                      <div><span>Platform *</span></div>
                       <Select filter v-model="appearance.platform"
                               :options="platformOptions"
                               optionLabel="label"
@@ -905,7 +920,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                     </div>
 
                     <div class="ec:w-1/2">
-                      <div><span>Diffusion format</span></div>
+                      <div><span>Diffusion format *</span></div>
                       <Select filter v-model="appearance.difussionFormat"
                               :options="formatOptions"
                               optionLabel="label"
@@ -916,7 +931,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Appearance URL</span></div>
+                    <div><span>Appearance URL *</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="appearance.url"/>
                   </div>
@@ -1016,8 +1031,14 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
 
                 <div v-for="(evidence, index) in data.evidences" :key="index"
                      class="ec:flex ec:flex-col ec:gap-4 ec:p-4 ec:ml-4 ec:border-l-2 ec:border-sky-900">
+                  <div class="ec:flex ec:justify-between ec:items-center">
+                    <h3 class="ec:text-lg ec:font-semibold">Evidence #{{ index + 1 }}</h3>
+                    <Button @click="removeEvidence(index)" severity="danger" size="small" class="ec:w-fit">
+                      <i class="fa-solid fa-trash ec:mr-2"></i> Remove
+                    </Button>
+                  </div>
                   <div class="ec:w-full">
-                    <div><span>Question</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What specific question addresses the claim being evaluated?</span>
+                    <div><span>Question *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What specific question addresses the claim being evaluated?</span>
                     </div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.question"
@@ -1025,21 +1046,21 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Answer</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What is the response or conclusion regarding the specific question?</span></div>
+                    <div><span>Answer *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What is the response or conclusion regarding the specific question?</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.answer"
                     />
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Source URL</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Where can the evidence supporting this answer be found?</span></div>
+                    <div><span>Source URL *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Where can the evidence supporting this answer be found?</span></div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.url"
                     />
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Type of evidence provided</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What type of evidence was used to support the claim verification?</span></div>
+                    <div><span>Type of evidence provided *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What type of evidence was used to support the claim verification?</span></div>
                     <Select filter v-model="evidence.type"
                             :options="evidenceTypes"
                             placeholder="Select evidence type"

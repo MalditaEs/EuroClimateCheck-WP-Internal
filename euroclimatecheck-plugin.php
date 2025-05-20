@@ -7,7 +7,7 @@
 /*
 Plugin Name: EFCSN EuroClimateCheck Plugin
 Description: WordPress Plugin to implement the EuroClimateCheck Repository.
-Version: 1.0.3
+Version: 1.0.5
 Author: Maldita.es
 Author URI: https://maldita.es
 Tags:
