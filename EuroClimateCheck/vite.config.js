@@ -16,14 +16,13 @@ export default defineConfig({
     lib: {
       entry: 'src/main.js',
       name: 'EuroClimateCheck',
-      fileName: 'euroclimatecheck'
+      fileName: 'euroclimatecheck',
+      formats: ['iife']
     },
     rollupOptions: {
-      external: ['vue'],
       output: {
-        globals: {
-          vue: 'Vue'
-        }
+        format: 'iife',
+        entryFileNames: 'euroclimatecheck.js'
       }
     }
   },
