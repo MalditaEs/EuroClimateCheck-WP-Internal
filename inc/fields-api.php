@@ -223,7 +223,13 @@ register_activation_hook(EUROCLIMATECHECK_PLUGIN_PATH . '/euroclimatecheck-plugi
 // Check for upgrades on admin_init
 add_action('admin_init', function() {
     $current_version = get_option('euroclimatecheck_version', '0');
-    $plugin_version = '1.0.6'; // Should match plugin header
+    
+    // Get plugin version from main plugin file
+    if (!function_exists('get_plugin_data')) {
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    }
+    $plugin_data = get_plugin_data(EUROCLIMATECHECK_PLUGIN_PATH . '/euroclimatecheck-plugin.php');
+    $plugin_version = $plugin_data['Version'];
     
     if (version_compare($current_version, $plugin_version, '<')) {
         euroclimatecheck_upgrade();

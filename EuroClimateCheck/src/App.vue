@@ -108,13 +108,6 @@ onMounted(async () => {
       // Load dynamic fields from API
       dynamicFields.value = parsedData.dynamicFields || {};
 
-      if (!dynamicFields.value) {
-        error.value = "Dynamic fields not found in data";
-        console.error(error.value);
-        loading.value = false;
-        return;
-      }
-
       // Convertir fechas string a objetos Date en claimAppearances
       if (parsedData.data.claimAppearances) {
         parsedData.data.claimAppearances = parsedData.data.claimAppearances.map(appearance => ({
