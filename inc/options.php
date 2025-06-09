@@ -137,6 +137,21 @@ function euroclimatecheck_create_settings_fields()
         'euroclimatecheck',
         'euroclimatecheck_post_types'
     );
+
+    add_settings_section(
+        'euroclimatecheck_fields_api',
+        __('EuroClimateCheck - Dynamic Field Values', 'claimreview'),
+        'euroclimatecheck_fields_api_section_callback',
+        'euroclimatecheck'
+    );
+
+    add_settings_field(
+        'euroclimatecheck_refresh_fields',
+        __('Field Values Management', 'claimreview'),
+        'euroclimatecheck_refresh_fields_callback',
+        'euroclimatecheck',
+        'euroclimatecheck_fields_api'
+    );
 }
 
 add_action('admin_init', 'euroclimatecheck_create_settings_fields');
@@ -379,4 +394,74 @@ function euroclimatecheck_post_types_callback()
         </label>
         <?php
     }
+}
+
+function euroclimatecheck_fields_api_section_callback()
+{
+    ?>
+    <p><?php _e('Manage dynamic field values fetched from the EuroClimateCheck API. These values are used to populate form dropdowns instead of hardcoded options.', 'claimreview'); ?></p>
+    <?php
+}
+
+function euroclimatecheck_refresh_fields_callback()
+{
+    $fields_api = new EuroClimateCheckFieldsAPI();
+    $has_values = $fields_api->has_stored_values();
+    $last_update = $fields_api->get_last_update_time();
+    
+    // Handle refresh action
+    if (isset($_POST['refresh_fields']) && wp_verify_nonce($_POST['_wpnonce'], 'refresh_fields_nonce')) {
+        try {
+            $fields_api->refresh_fields();
+            echo '<div class="notice notice-success"><p>' . __('Field values updated successfully!', 'claimreview') . '</p></div>';
+            $has_values = true;
+            $last_update = current_time('mysql');
+        } catch (Exception $e) {
+            echo '<div class="notice notice-error"><p>' . sprintf(__('Error updating field values: %s', 'claimreview'), esc_html($e->getMessage())) . '</p></div>';
+        }
+    }
+    
+    ?>
+    <div style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+        <h4 style="margin-top: 0;"><?php _e('Status', 'claimreview'); ?></h4>
+        
+        <?php if ($has_values): ?>
+            <p><strong><?php _e('Status:', 'claimreview'); ?></strong> 
+                <span style="color: green;"><?php _e('Field values are stored', 'claimreview'); ?></span>
+            </p>
+            <?php if ($last_update): ?>
+                <p><strong><?php _e('Last updated:', 'claimreview'); ?></strong> 
+                    <?php echo esc_html(wp_date(get_option('date_format') . ' ' . get_option('time_format'), strtotime($last_update))); ?>
+                </p>
+            <?php endif; ?>
+        <?php else: ?>
+            <p><strong><?php _e('Status:', 'claimreview'); ?></strong> 
+                <span style="color: orange;"><?php _e('No field values stored', 'claimreview'); ?></span>
+            </p>
+            <p style="color: #666; font-style: italic;">
+                <?php _e('Click "Refresh Field Values" to fetch the latest values from the API.', 'claimreview'); ?>
+            </p>
+        <?php endif; ?>
+        
+        <form method="post" style="margin-top: 15px;">
+            <?php wp_nonce_field('refresh_fields_nonce'); ?>
+            <input type="submit" 
+                   name="refresh_fields" 
+                   class="button button-secondary" 
+                   value="<?php esc_attr_e('Refresh Field Values', 'claimreview'); ?>"
+                   <?php echo (!get_option('euroclimatecheck-endpoint') || !get_option('euroclimatecheck-apikey') || !get_option('euroclimatecheck-domain')) ? 'disabled title="' . esc_attr__('Please configure API settings first', 'claimreview') . '"' : ''; ?>
+            />
+            <p class="description">
+                <?php _e('Fetch the latest field values from the EuroClimateCheck API. This will update all dropdown options in the form.', 'claimreview'); ?>
+            </p>
+        </form>
+        
+        <?php if (!get_option('euroclimatecheck-endpoint') || !get_option('euroclimatecheck-apikey') || !get_option('euroclimatecheck-domain')): ?>
+            <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 3px;">
+                <strong><?php _e('Note:', 'claimreview'); ?></strong>
+                <?php _e('Please configure the API Key, Domain, and Endpoint settings above before refreshing field values.', 'claimreview'); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php
 }

@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref, watch, computed} from 'vue';
 import {SelectButton} from "primevue";
 import {Card} from "primevue";
 import MultiSelect from 'primevue/multiselect';
@@ -47,6 +47,9 @@ const apiConfig = ref({
   domain: '',
   endpoint: ''
 });
+
+// Dynamic fields from API
+const dynamicFields = ref({});
 
 onMounted(async () => {
   try {
@@ -102,6 +105,9 @@ onMounted(async () => {
         endpoint: parsedData.endpoint
       };
 
+      // Load dynamic fields from API
+      dynamicFields.value = parsedData.dynamicFields || {};
+
       // Convertir fechas string a objetos Date en claimAppearances
       if (parsedData.data.claimAppearances) {
         parsedData.data.claimAppearances = parsedData.data.claimAppearances.map(appearance => ({
@@ -138,7 +144,249 @@ onMounted(async () => {
   }
 });
 
-const articleTypes = ['Factcheck', 'Prebunk', 'None'];
+// Computed properties for dynamic fields
+const articleTypes = computed(() => {
+  return dynamicFields.value.articleType || ['Factcheck', 'Prebunk', 'None'];
+});
+
+const topics = computed(() => {
+  return dynamicFields.value.topics || [
+    'Extreme weather events',
+    'Transport',
+    'Renewables',
+    'Conspiracy theories',
+    'Fossil fuels',
+    'Waste',
+    'Other'
+  ];
+});
+
+const ratingOptions = computed(() => {
+  return dynamicFields.value.reviewRating || [
+    'False',
+    'Partly false',
+    'Missing Context',
+    'Satire',
+    'True',
+    'AI Generated',
+    'Lack of evidence'
+  ];
+});
+
+const distortionTypes = computed(() => {
+  return dynamicFields.value.distortionType || [
+    'Unproven',
+    'Satire believed to be true',
+    'Mislabelled, misattributed or misidentified information',
+    'Misleading information',
+    'Overstated/understated',
+    'Conflated',
+    'Edited content',
+    'Staged content',
+    'Transformed content',
+    'Fabricated information',
+    'Imposter content',
+    'Co-ordinated inauthentic behaviour',
+    'True'
+  ];
+});
+
+const aiVerificationMethods = computed(() => {
+  return dynamicFields.value.aiVerification || [
+    'Direct disclosure',
+    'Indirect disclosure',
+    'AI detection tool',
+    'Context',
+    'Direct rebuttal evidence'
+  ];
+});
+
+const harmEscalationLevels = computed(() => {
+  return dynamicFields.value.harmEscalation || [
+    'Unlikely to escalate',
+    'Plausibly could escalate',
+    'Context suggests escalation likely'
+  ];
+});
+
+const evidenceTypes = computed(() => {
+  return dynamicFields.value.evidenceTypes || [
+    'Online written source (including statistical data)',
+    'Online media source (video, audio, image analysis, and reverse image search)',
+    'Reference to other fact-checked articles',
+    'Consultation with the claimant (and/or people involved in the claim)',
+    'Consultation with experts',
+    'Consultation with a government official or department (including local government and public/emergency services)',
+    'None the fact checker could find',
+    'Other'
+  ];
+});
+
+const platforms = computed(() => {
+  const dynamicPlatforms = dynamicFields.value.platform || [];
+  if (dynamicPlatforms.length > 0) {
+    const platformsObj = {};
+    dynamicPlatforms.forEach(platform => {
+      platformsObj[platform.toLowerCase()] = platform;
+    });
+    return platformsObj;
+  }
+  return {
+    'x': 'X',
+    'facebook': 'Facebook',
+    'instagram': 'Instagram',
+    'tiktok': 'TikTok',
+    'youtube': 'YouTube',
+    'whatsapp': 'WhatsApp',
+    'telegram': 'Telegram',
+    'signal': 'Signal',
+    'other': 'Other'
+  };
+});
+
+const diffusionFormats = computed(() => {
+  const dynamicFormats = dynamicFields.value.difussionFormat || [];
+  if (dynamicFormats.length > 0) {
+    const formatsObj = {};
+    dynamicFormats.forEach(format => {
+      formatsObj[format.toLowerCase()] = format;
+    });
+    return formatsObj;
+  }
+  return {
+    'text': 'Text',
+    'image': 'Image',
+    'video': 'Video',
+    'audio': 'Audio',
+    'other': 'Other'
+  };
+});
+
+const claimantTypes = computed(() => {
+  return dynamicFields.value.claimantType || [
+    'Person',
+    'Organization'
+  ];
+});
+
+const claimantInfluenceLevels = computed(() => {
+  const dynamicInfluence = dynamicFields.value.claimantInfluence || [];
+  if (dynamicInfluence.length > 0) {
+    const influenceObj = {};
+    dynamicInfluence.forEach(level => {
+      influenceObj[level] = level;
+    });
+    return influenceObj;
+  }
+  return {
+    'High': 'High (E.g. President/PM of a country, a high-profile MP, a mainstream political party, household names)',
+    'Medium': 'Medium (E.g. a community leader, a famous actor, someone famous in the media/social media (with many followers))',
+    'Low': 'Low (E.g. random social media users, anonymous sources, a head teacher in a school, etc.'
+  };
+});
+
+// Dynamic subtopics based on selected topic
+const subTopic = computed(() => {
+  const dynamicSubtopics = dynamicFields.value.subtopics || [];
+  if (dynamicSubtopics.length > 0) {
+    // Group subtopics by their base topic (assuming format "Topic - Subtopic")
+    const grouped = {};
+    dynamicSubtopics.forEach(subtopic => {
+      const parts = subtopic.split(' - ');
+      if (parts.length === 2) {
+        const [topic, sub] = parts;
+        if (!grouped[topic]) grouped[topic] = [];
+        grouped[topic].push(sub);
+      }
+    });
+    return grouped;
+  }
+  
+  // Fallback to hardcoded subtopics
+  return {
+    'Extreme weather events': [
+      'Increasing temperatures',
+      'Heatwaves',
+      'Floods',
+      'Water scarcity',
+      'Other'
+    ],
+    'Transport': [
+      'Electric cars',
+      'Other'
+    ],
+    'Renewables': [
+      'Wind energy',
+      'Solar PV',
+      'Offshore wind energy',
+      'Other'
+    ],
+    'Conspiracy theories': [
+      'Chemtrails',
+      '2030 agenda',
+      '15-minute cities',
+      'HAARP',
+      'Other'
+    ],
+    'Fossil fuels': [
+      'Natural gas',
+      'Oil',
+      'Coal',
+      'Other'
+    ],
+    'Waste': [
+      'Plastic',
+      'Other'
+    ],
+    'Other': [
+      'Climate change denial',
+      'Meat consumption',
+      'Other'
+    ]
+  };
+});
+
+// Countries and languages with dynamic support
+const cleanAllowedCountries = computed(() => {
+  const dynamicCountries = dynamicFields.value.countryISO || [];
+  if (dynamicCountries.length > 0) {
+    return dynamicCountries.map(([name, code]) => ({ name, code }));
+  }
+  
+  return Object.entries(allCountries)
+    .filter(([countryCode]) => allowedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
+      name: countryName,
+      code: countryCode
+    }));
+});
+
+const cleanReducedCountries = computed(() => {
+  const dynamicCountries = dynamicFields.value.worldCountriesISO || [];
+  if (dynamicCountries.length > 0) {
+    return dynamicCountries.map(([name, code]) => ({ name, code }));
+  }
+  
+  return Object.entries(allCountries)
+    .filter(([countryCode]) => reducedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
+      name: countryName,
+      code: countryCode
+    }));
+});
+
+const cleanLanguages = computed(() => {
+  const dynamicLanguages = dynamicFields.value.languageISO || [];
+  if (dynamicLanguages.length > 0) {
+    return dynamicLanguages.map(([name, code]) => ({ name, code }));
+  }
+  
+  return Object.entries(languages).map(([languageCode, languageName]) => ({
+    name: languageName,
+    code: languageCode
+  }));
+});
+
+// Keep the original hardcoded arrays for fallback
+const fallbackArticleTypes = ['Factcheck', 'Prebunk', 'None'];
 
 const allCountries = {
   "AF": "Afghanistan",
@@ -447,73 +695,9 @@ const languages = {
   "OTHER": "Other"
 };
 
-const cleanAllowedCountries = Object.entries(allCountries)
-    .filter(([countryCode]) => allowedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
-      name: countryName,
-      code: countryCode
-    }));
+// These are now handled by computed properties above
 
-const cleanReducedCountries = ref(Object.entries(allCountries)
-    .filter(([countryCode]) => reducedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
-      name: countryName,
-      code: countryCode
-    })));
-
-const cleanLanguages = Object.entries(languages).map(([languageCode, languageName]) => ({
-  name: languageName,
-  code: languageCode
-}));
-
-const topics = [
-  'Extreme weather events',
-  'Transport',
-  'Renewables',
-  'Conspiracy theories',
-  'Fossil fuels',
-  'Waste',
-  'Other'
-];
-const subTopic = {
-  'Extreme weather events': [
-    'Increasing temperatures',
-    'Heatwaves',
-    'Floods',
-    'Water scarcity',
-    'Other'
-  ],
-  'Transport': [
-    'Electric cars',
-    'Other'
-  ],
-  'Renewables': [
-    'Wind energy',
-    'Solar PV',
-    'Offshore wind energy',
-    'Other'
-  ],
-  'Conspiracy theories': [
-    'Chemtrails',
-    '2030 agenda',
-    '15-minute cities',
-    'HAARP',
-    'Other'
-  ],
-  'Fossil fuels': [
-    'Natural gas',
-    'Oil',
-    'Coal',
-    'Other'
-  ],
-  'Waste': [
-    'Plastic',
-    'Other'
-  ],
-  'Other': [
-    'Climate change denial',
-    'Meat consumption',
-    'Other'
-  ]
-};
+// These will be replaced by computed properties using dynamic fields
 
 const newKeyword = ref('');
 
@@ -542,93 +726,11 @@ const removeEvidence = (index) => {
   data.value.evidences.splice(index, 1);
 };
 
-const ratingOptions = [
-  'False',
-  'Partly false',
-  'Missing Context',
-  'Satire',
-  'True',
-  'AI Generated',
-  'Lack of evidence'
-];
-
 const yesNoOptions = {true: 'Yes', false: 'No'};
 
-const distortionTypes = [
-  'Unproven',
-  'Satire believed to be true',
-  'Mislabelled, misattributed or misidentified information',
-  'Misleading information',
-  'Overstated/understated',
-  'Conflated',
-  'Edited content',
-  'Staged content',
-  'Transformed content',
-  'Fabricated information',
-  'Imposter content',
-  'Co-ordinated inauthentic behaviour',
-  'True'
-];
-
-const aiVerificationMethods = [
-  'Direct disclosure',
-  'Indirect disclosure',
-  'AI detection tool',
-  'Context',
-  'Direct rebuttal evidence'
-];
-
-const harmEscalationLevels = [
-  'Unlikely to escalate',
-  'Plausibly could escalate',
-  'Context suggests escalation likely'
-];
-
-const evidenceTypes = [
-  'Online written source (including statistical data)',
-  'Online media source (video, audio, image analysis, and reverse image search)',
-  'Reference to other fact-checked articles',
-  'Consultation with the claimant (and/or people involved in the claim)',
-  'Consultation with experts',
-  'Consultation with a government official or department (including local government and public/emergency services)',
-  'None the fact checker could find',
-  'Other'
-];
-
-const platforms = {
-  'x': 'X',
-  'facebook': 'Facebook',
-  'instagram': 'Instagram',
-  'tiktok': 'TikTok',
-  'youtube': 'YouTube',
-  'whatsapp': 'WhatsApp',
-  'telegram': 'Telegram',
-  'signal': 'Signal',
-  'other': 'Other'
-};
-
-const diffusionFormats = {
-  'text': 'Text',
-  'image': 'Image',
-  'video': 'Video',
-  'audio': 'Audio',
-  'other': 'Other'
-};
-
-const claimantTypes = [
-  'Person',
-  'Organization'
-];
-
-const claimantInfluenceLevels = {
-  'High': 'High (E.g. President/PM of a country, a high-profile MP, a mainstream political party, household names)',
-  'Medium': 'Medium (E.g. a community leader, a famous actor, someone famous in the media/social media (with many followers))',
-  'Low': 'Low (E.g. random social media users, anonymous sources, a head teacher in a school, etc.'
-};
-
-const platformOptions = Object.entries(platforms).map(([value, label]) => ({value, label}));
-const formatOptions = Object.entries(diffusionFormats).map(([value, label]) => ({value, label}));
-const influenceLevelOptions = Object.entries(claimantInfluenceLevels).map(([value, label]) => ({value, label}));
+const platformOptions = computed(() => Object.entries(platforms.value).map(([value, label]) => ({value, label})));
+const formatOptions = computed(() => Object.entries(diffusionFormats.value).map(([value, label]) => ({value, label})));
+const influenceLevelOptions = computed(() => Object.entries(claimantInfluenceLevels.value).map(([value, label]) => ({value, label})));
 
 const addClaimAppearance = () => {
   data.value.claimAppearances.push({
