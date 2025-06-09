@@ -289,19 +289,9 @@ const claimantInfluenceLevels = computed(() => {
 
 // Dynamic subtopics based on selected topic
 const subTopic = computed(() => {
-  const dynamicSubtopics = dynamicFields.value.subtopics || [];
-  if (dynamicSubtopics.length > 0) {
-    // Group subtopics by their base topic (assuming format "Topic - Subtopic")
-    const grouped = {};
-    dynamicSubtopics.forEach(subtopic => {
+      // Expects format "Topic - Subtopic". Skips if format is different.
       const parts = subtopic.split(' - ');
       if (parts.length === 2) {
-        const [topic, sub] = parts;
-        if (!grouped[topic]) grouped[topic] = [];
-        grouped[topic].push(sub);
-      }
-    });
-    return grouped;
   }
   
   // Fallback to hardcoded subtopics
