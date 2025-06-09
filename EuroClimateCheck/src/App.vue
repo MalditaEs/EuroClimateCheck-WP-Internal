@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref, watch, computed} from 'vue';
 import {SelectButton} from "primevue";
 import {Card} from "primevue";
 import MultiSelect from 'primevue/multiselect';
@@ -47,6 +47,9 @@ const apiConfig = ref({
   domain: '',
   endpoint: ''
 });
+
+// Dynamic fields from API
+const dynamicFields = ref({});
 
 onMounted(async () => {
   try {
@@ -102,6 +105,9 @@ onMounted(async () => {
         endpoint: parsedData.endpoint
       };
 
+      // Load dynamic fields from API
+      dynamicFields.value = parsedData.dynamicFields || {};
+
       // Convertir fechas string a objetos Date en claimAppearances
       if (parsedData.data.claimAppearances) {
         parsedData.data.claimAppearances = parsedData.data.claimAppearances.map(appearance => ({
@@ -138,7 +144,268 @@ onMounted(async () => {
   }
 });
 
-const articleTypes = ['Factcheck', 'Prebunk', 'None'];
+// Computed properties for dynamic fields
+const articleTypes = computed(() => {
+  return dynamicFields.value.articleType || ['Factcheck', 'Prebunk', 'None'];
+});
+
+const topics = computed(() => {
+  return dynamicFields.value.topics || [
+    'Extreme weather events',
+    'Transport',
+    'Renewables',
+    'Conspiracy theories',
+    'Fossil fuels',
+    'Waste',
+    'Other'
+  ];
+});
+
+const ratingOptions = computed(() => {
+  return dynamicFields.value.reviewRating || [
+    'False',
+    'Partly false',
+    'Missing Context',
+    'Satire',
+    'True',
+    'AI Generated',
+    'Lack of evidence'
+  ];
+});
+
+const distortionTypes = computed(() => {
+  return dynamicFields.value.distortionType || [
+    'Unproven',
+    'Satire believed to be true',
+    'Mislabelled, misattributed or misidentified information',
+    'Misleading information',
+    'Overstated/understated',
+    'Conflated',
+    'Edited content',
+    'Staged content',
+    'Transformed content',
+    'Fabricated information',
+    'Imposter content',
+    'Co-ordinated inauthentic behaviour',
+    'True'
+  ];
+});
+
+const aiVerificationMethods = computed(() => {
+  return dynamicFields.value.aiVerification || [
+    'Direct disclosure',
+    'Indirect disclosure',
+    'AI detection tool',
+    'Context',
+    'Direct rebuttal evidence'
+  ];
+});
+
+const harmEscalationLevels = computed(() => {
+  return dynamicFields.value.harmEscalation || [
+    'Unlikely to escalate',
+    'Plausibly could escalate',
+    'Context suggests escalation likely'
+  ];
+});
+
+const evidenceTypes = computed(() => {
+  return dynamicFields.value.evidenceTypes || [
+    'Online written source (including statistical data)',
+    'Online media source (video, audio, image analysis, and reverse image search)',
+    'Reference to other fact-checked articles',
+    'Consultation with the claimant (and/or people involved in the claim)',
+    'Consultation with experts',
+    'Consultation with a government official or department (including local government and public/emergency services)',
+    'None the fact checker could find',
+    'Other'
+  ];
+});
+
+const platforms = computed(() => {
+  const dynamicPlatforms = dynamicFields.value.platform || [];
+  if (dynamicPlatforms.length > 0) {
+    const platformsObj = {};
+    dynamicPlatforms.forEach(platform => {
+      platformsObj[platform.toLowerCase()] = platform;
+    });
+    return platformsObj;
+  }
+  return {
+    'x': 'X',
+    'facebook': 'Facebook',
+    'instagram': 'Instagram',
+    'tiktok': 'TikTok',
+    'youtube': 'YouTube',
+    'whatsapp': 'WhatsApp',
+    'telegram': 'Telegram',
+    'signal': 'Signal',
+    'other': 'Other'
+  };
+});
+
+const diffusionFormats = computed(() => {
+  // Note: 'difussionFormat' is a known typo in the API field name.
+  const dynamicFormats = dynamicFields.value.difussionFormat || [];
+  if (dynamicFormats.length > 0) {
+    const formatsObj = {};
+    dynamicFormats.forEach(format => {
+      formatsObj[format.toLowerCase()] = format;
+    });
+    return formatsObj;
+  }
+  return {
+    'text': 'Text',
+    'image': 'Image',
+    'video': 'Video',
+    'audio': 'Audio',
+    'other': 'Other'
+  };
+});
+
+const claimantTypes = computed(() => {
+  return dynamicFields.value.claimantType || [
+    'Person',
+    'Organization'
+  ];
+});
+
+const claimantInfluenceLevels = computed(() => {
+  const dynamicInfluence = dynamicFields.value.claimantInfluence || [];
+  if (dynamicInfluence.length > 0) {
+    const influenceObj = {};
+    dynamicInfluence.forEach(level => {
+      influenceObj[level] = level;
+    });
+    return influenceObj;
+  }
+  return {
+    'High': 'High (E.g. President/PM of a country, a high-profile MP, a mainstream political party, household names)',
+    'Medium': 'Medium (E.g. a community leader, a famous actor, someone famous in the media/social media (with many followers))',
+    'Low': 'Low (E.g. random social media users, anonymous sources, a head teacher in a school, etc.'
+  };
+});
+
+// Dynamic subtopics based on selected topic
+const subTopic = computed(() => {
+  // Get subtopics from dynamic fields
+  const subtopicsArray = dynamicFields.value.subtopics || [];
+  
+  // Transform the array into an object with topics as keys and arrays of subtopics as values
+  const subtopicsByTopic = subtopicsArray.reduce((acc, item) => {
+    const [topic, subtopic] = item.split(' - ');
+    if (topic && subtopic) {
+      if (!acc[topic]) {
+        acc[topic] = [];
+      }
+      acc[topic].push(subtopic);
+    }
+    return acc;
+  }, {});
+
+  // If we have processed subtopics, return them
+  if (Object.keys(subtopicsByTopic).length > 0) {
+    return subtopicsByTopic;
+  }
+
+  // Fallback to hardcoded subtopics
+  return {
+    'Extreme weather events': [
+      'Increasing temperatures',
+      'Heatwaves',
+      'Floods',
+      'Water scarcity',
+      'Other'
+    ],
+    'Transport': [
+      'Electric cars',
+      'Other'
+    ],
+    'Renewables': [
+      'Wind energy',
+      'Solar PV',
+      'Offshore wind energy',
+      'Other'
+    ],
+    'Conspiracy theories': [
+      'Chemtrails',
+      '2030 agenda',
+      '15-minute cities',
+      'HAARP',
+      'Other'
+    ],
+    'Fossil fuels': [
+      'Natural gas',
+      'Oil',
+      'Coal',
+      'Other'
+    ],
+    'Waste': [
+      'Plastic',
+      'Other'
+    ],
+    'Other': [
+      'Climate change denial',
+      'Meat consumption',
+      'Other'
+    ]
+  };
+});
+
+// Add this computed property after the subTopic computed
+const invalidSubtopics = computed(() => {
+  if (!data.value.subtopics || !data.value.subtopics.length) return [];
+  
+  const validSubtopics = subTopic.value[data.value.topic] || [];
+  return data.value.subtopics.filter(subtopic => !validSubtopics.includes(subtopic));
+});
+
+// Add this computed property to check if we should show the alert
+const hasInvalidSubtopics = computed(() => {
+  return invalidSubtopics.value.length > 0;
+});
+
+// Countries and languages with dynamic support
+const cleanAllowedCountries = computed(() => {
+  const dynamicCountries = dynamicFields.value.countryISO || [];
+  if (dynamicCountries.length > 0) {
+    return dynamicCountries.map(([name, code]) => ({name, code}));
+  }
+
+  return Object.entries(allCountries)
+      .filter(([countryCode]) => allowedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
+        name: countryName,
+        code: countryCode
+      }));
+});
+
+const cleanReducedCountries = computed(() => {
+  const dynamicCountries = dynamicFields.value.worldCountriesISO || [];
+  if (dynamicCountries.length > 0) {
+    return dynamicCountries.map(([name, code]) => ({name, code}));
+  }
+
+  return Object.entries(allCountries)
+      .filter(([countryCode]) => reducedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
+        name: countryName,
+        code: countryCode
+      }));
+});
+
+const cleanLanguages = computed(() => {
+  const dynamicLanguages = dynamicFields.value.languageISO || [];
+  if (dynamicLanguages.length > 0) {
+    return dynamicLanguages.map(([name, code]) => ({name, code}));
+  }
+
+  return Object.entries(languages).map(([languageCode, languageName]) => ({
+    name: languageName,
+    code: languageCode
+  }));
+});
+
+// Keep the original hardcoded arrays for fallback
+const fallbackArticleTypes = ['Factcheck', 'Prebunk', 'None'];
 
 const allCountries = {
   "AF": "Afghanistan",
@@ -447,73 +714,9 @@ const languages = {
   "OTHER": "Other"
 };
 
-const cleanAllowedCountries = Object.entries(allCountries)
-    .filter(([countryCode]) => allowedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
-      name: countryName,
-      code: countryCode
-    }));
+// These are now handled by computed properties above
 
-const cleanReducedCountries = ref(Object.entries(allCountries)
-    .filter(([countryCode]) => reducedCountries.includes(countryCode)).map(([countryCode, countryName]) => ({
-      name: countryName,
-      code: countryCode
-    })));
-
-const cleanLanguages = Object.entries(languages).map(([languageCode, languageName]) => ({
-  name: languageName,
-  code: languageCode
-}));
-
-const topics = [
-  'Extreme weather events',
-  'Transport',
-  'Renewables',
-  'Conspiracy theories',
-  'Fossil fuels',
-  'Waste',
-  'Other'
-];
-const subTopic = {
-  'Extreme weather events': [
-    'Increasing temperatures',
-    'Heatwaves',
-    'Floods',
-    'Water scarcity',
-    'Other'
-  ],
-  'Transport': [
-    'Electric cars',
-    'Other'
-  ],
-  'Renewables': [
-    'Wind energy',
-    'Solar PV',
-    'Offshore wind energy',
-    'Other'
-  ],
-  'Conspiracy theories': [
-    'Chemtrails',
-    '2030 agenda',
-    '15-minute cities',
-    'HAARP',
-    'Other'
-  ],
-  'Fossil fuels': [
-    'Natural gas',
-    'Oil',
-    'Coal',
-    'Other'
-  ],
-  'Waste': [
-    'Plastic',
-    'Other'
-  ],
-  'Other': [
-    'Climate change denial',
-    'Meat consumption',
-    'Other'
-  ]
-};
+// These will be replaced by computed properties using dynamic fields
 
 const newKeyword = ref('');
 
@@ -542,93 +745,17 @@ const removeEvidence = (index) => {
   data.value.evidences.splice(index, 1);
 };
 
-const ratingOptions = [
-  'False',
-  'Partly false',
-  'Missing Context',
-  'Satire',
-  'True',
-  'AI Generated',
-  'Lack of evidence'
-];
-
 const yesNoOptions = {true: 'Yes', false: 'No'};
 
-const distortionTypes = [
-  'Unproven',
-  'Satire believed to be true',
-  'Mislabelled, misattributed or misidentified information',
-  'Misleading information',
-  'Overstated/understated',
-  'Conflated',
-  'Edited content',
-  'Staged content',
-  'Transformed content',
-  'Fabricated information',
-  'Imposter content',
-  'Co-ordinated inauthentic behaviour',
-  'True'
-];
-
-const aiVerificationMethods = [
-  'Direct disclosure',
-  'Indirect disclosure',
-  'AI detection tool',
-  'Context',
-  'Direct rebuttal evidence'
-];
-
-const harmEscalationLevels = [
-  'Unlikely to escalate',
-  'Plausibly could escalate',
-  'Context suggests escalation likely'
-];
-
-const evidenceTypes = [
-  'Online written source (including statistical data)',
-  'Online media source (video, audio, image analysis, and reverse image search)',
-  'Reference to other fact-checked articles',
-  'Consultation with the claimant (and/or people involved in the claim)',
-  'Consultation with experts',
-  'Consultation with a government official or department (including local government and public/emergency services)',
-  'None the fact checker could find',
-  'Other'
-];
-
-const platforms = {
-  'x': 'X',
-  'facebook': 'Facebook',
-  'instagram': 'Instagram',
-  'tiktok': 'TikTok',
-  'youtube': 'YouTube',
-  'whatsapp': 'WhatsApp',
-  'telegram': 'Telegram',
-  'signal': 'Signal',
-  'other': 'Other'
-};
-
-const diffusionFormats = {
-  'text': 'Text',
-  'image': 'Image',
-  'video': 'Video',
-  'audio': 'Audio',
-  'other': 'Other'
-};
-
-const claimantTypes = [
-  'Person',
-  'Organization'
-];
-
-const claimantInfluenceLevels = {
-  'High': 'High (E.g. President/PM of a country, a high-profile MP, a mainstream political party, household names)',
-  'Medium': 'Medium (E.g. a community leader, a famous actor, someone famous in the media/social media (with many followers))',
-  'Low': 'Low (E.g. random social media users, anonymous sources, a head teacher in a school, etc.'
-};
-
-const platformOptions = Object.entries(platforms).map(([value, label]) => ({value, label}));
-const formatOptions = Object.entries(diffusionFormats).map(([value, label]) => ({value, label}));
-const influenceLevelOptions = Object.entries(claimantInfluenceLevels).map(([value, label]) => ({value, label}));
+const platformOptions = computed(() => Object.entries(platforms.value).map(([value, label]) => ({value, label})));
+const formatOptions = computed(() => Object.entries(diffusionFormats.value).map(([value, label]) => ({
+  value,
+  label
+})));
+const influenceLevelOptions = computed(() => Object.entries(claimantInfluenceLevels.value).map(([value, label]) => ({
+  value,
+  label
+})));
 
 const addClaimAppearance = () => {
   data.value.claimAppearances.push({
@@ -667,6 +794,72 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
   }
 });
 
+// Add these computed properties after the existing computed properties
+const invalidFields = computed(() => {
+  const invalid = {};
+
+  // Check article type
+  if (data.value.type && !articleTypes.value.includes(data.value.type)) {
+    invalid.articleType = data.value.type;
+  }
+
+  // Check topic
+  if (data.value.topic && !topics.value.includes(data.value.topic)) {
+    invalid.topic = data.value.topic;
+  }
+
+  // Check subtopics
+  if (data.value.subtopics && data.value.subtopics.length) {
+    const validSubtopics = subTopic.value[data.value.topic] || [];
+    const invalidSubtopics = data.value.subtopics.filter(subtopic => !validSubtopics.includes(subtopic));
+    if (invalidSubtopics.length > 0) {
+      invalid.subtopics = invalidSubtopics;
+    }
+  }
+
+  // Check rating
+  if (data.value.reviewRating && !ratingOptions.value.includes(data.value.reviewRating)) {
+    invalid.rating = data.value.reviewRating;
+  }
+
+  // Check distortion types
+  if (data.value.distortionType && data.value.distortionType.length) {
+    const invalidDistortions = data.value.distortionType.filter(type => !distortionTypes.value.includes(type));
+    if (invalidDistortions.length > 0) {
+      invalid.distortionType = invalidDistortions;
+    }
+  }
+
+  // Check AI verification methods
+  if (data.value.aiVerification && data.value.aiVerification.length) {
+    const invalidMethods = data.value.aiVerification.filter(method => !aiVerificationMethods.value.includes(method));
+    if (invalidMethods.length > 0) {
+      invalid.aiVerification = invalidMethods;
+    }
+  }
+
+  // Check harm escalation
+  if (data.value.harmEscalation && !harmEscalationLevels.value.includes(data.value.harmEscalation)) {
+    invalid.harmEscalation = data.value.harmEscalation;
+  }
+
+  // Check evidence types
+  if (data.value.evidences && data.value.evidences.length) {
+    const invalidEvidences = data.value.evidences.filter(evidence => 
+      evidence.type && !evidenceTypes.value.includes(evidence.type)
+    );
+    if (invalidEvidences.length > 0) {
+      invalid.evidenceTypes = invalidEvidences.map(e => e.type);
+    }
+  }
+
+  return invalid;
+});
+
+const hasInvalidFields = computed(() => {
+  return Object.keys(invalidFields.value).length > 0;
+});
+
 </script>
 
 <template>
@@ -700,6 +893,28 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
             src="./assets/euroclimatecheck.png"
         />
       </header>
+
+      <!-- Invalid fields alerts -->
+      <div v-if="hasInvalidFields" class="ec:mb-4 ec:space-y-4">
+        <div v-for="(value, field) in invalidFields" :key="field" 
+             class="ec:bg-amber-100 ec:border-l-4 ec:border-amber-500 ec:text-amber-700 ec:p-4 ec:rounded">
+          <div class="ec:flex ec:items-baseline">
+            <div class="ec:flex-shrink-0">
+              <i class="fa-solid fa-triangle-exclamation ec:text-amber-500"></i>
+            </div>
+            <div class="ec:ml-3">
+              <p class="ec:text-sm">
+                <strong>Warning:</strong> Some stored values for <span class="ec:font-semibold">{{ field }}</span> are no longer valid:
+              </p>
+              <ul class="ec:mt-2 ec:list-disc ec:list-inside">
+                <li v-for="item in (Array.isArray(value) ? value : [value])" :key="item" class="ec:text-sm">
+                  {{ item }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <main class="ec:bg-white ec:gap-4 ec:flex ec:flex-col">
 
@@ -809,8 +1024,9 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
 
               <div class="ec:flex ec:flex-col ec:flex-wrap ec:gap-4 ec:mt-8">
                 <div class="ec:w-full">
-                  <div><span>Alternative image</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Optional. If set, this image will be used instead of the featured image.</span></div>
-                  <ImageUploader v-model="data.alternativeImage" />
+                  <div><span>Alternative image</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Optional. If set, this image will be used instead of the featured image.</span>
+                  </div>
+                  <ImageUploader v-model="data.alternativeImage"/>
                 </div>
               </div>
 
@@ -837,7 +1053,7 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                   <div><span>Claim text in English *</span></div>
                   <div class="ec:flex ec:items-center ec:gap-2">
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300" v-model="data.claimReviewed"
-                             placeholder="Claim text, translated to English"></InputText>
+                               placeholder="Claim text, translated to English"></InputText>
                     <TranslateButton style="width: 20% !important;"
                                      :getSourceText="() => data.claimReviewedNative"
                                      :updateTargetField="(text) => data.claimReviewed = text"
@@ -1046,21 +1262,24 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Answer *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What is the response or conclusion regarding the specific question?</span></div>
+                    <div><span>Answer *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What is the response or conclusion regarding the specific question?</span>
+                    </div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.answer"
                     />
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Source URL *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Where can the evidence supporting this answer be found?</span></div>
+                    <div><span>Source URL *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">Where can the evidence supporting this answer be found?</span>
+                    </div>
                     <InputText class="ec:w-full ec:!border ec:!border-slate-300"
                                v-model="evidence.url"
                     />
                   </div>
 
                   <div class="ec:w-full">
-                    <div><span>Type of evidence provided *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What type of evidence was used to support the claim verification?</span></div>
+                    <div><span>Type of evidence provided *</span> <span class="ec:italic ec:text-xs ec:text-slate-500">What type of evidence was used to support the claim verification?</span>
+                    </div>
                     <Select filter v-model="evidence.type"
                             :options="evidenceTypes"
                             placeholder="Select evidence type"
@@ -1076,7 +1295,8 @@ watch(() => data.value.topic, (newTopic, oldTopic) => {
       </main>
 
       <footer class="ec:mt-8 ec:pt-4 ec:border-t ec:border-slate-200 ec:text-center ec:text-sm ec:text-slate-600">
-        Developed with 🖤 by <a href="https://maldita.es" target="_blank" rel="noopener noreferrer" class="ec:text-emerald-700 hover:ec:underline">Maldita.es</a>
+        Developed with 🖤 by <a href="https://maldita.es" target="_blank" rel="noopener noreferrer"
+                               class="ec:text-emerald-700 hover:ec:underline">Maldita.es</a>
       </footer>
 
     </div>

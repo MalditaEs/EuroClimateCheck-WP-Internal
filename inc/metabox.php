@@ -46,12 +46,17 @@ function ee24_build_claim_box( $data ) {
     ?>
     <script type="application/json" id="euroclimatecheck-data">
     <?php
+		// Get dynamic field values
+		$fields_api = new EuroClimateCheckFieldsAPI();
+		$dynamic_fields = $fields_api->get_field_values();
+		
 		echo json_encode([
 			"data" => $data,
 			"apikey" => get_option('euroclimatecheck-apikey'),
 			"domain" => get_option('euroclimatecheck-domain'),
 			"language" => get_option('euroclimatecheck-language'),
-            "endpoint" => get_option( 'euroclimatecheck-endpoint' )
+            "endpoint" => get_option( 'euroclimatecheck-endpoint' ),
+            "dynamicFields" => $dynamic_fields
 		]);
 		?>
 </script>

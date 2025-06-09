@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2753118c-7269-49af-986b-85ad722253ab" name="Changes" comment="Ensure tomselect elements existence before initialization&#10;&#10;Bumps the version of claim-review-plugin to 1.0.18 and refactors the JavaScript code in claim-review-admin.js to check for the existence of elements before initializing them with TomSelect. This change prevents potential JavaScript errors when the expected elements are not available in the DOM.">
-      <change beforePath="$PROJECT_DIR$/.idea/laravel-idea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-idea.xml" afterDir="false" />
+    <list default="true" id="15fa9b1d-ac64-434e-81ce-0e31dfca369c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EuroClimateCheck/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/EuroClimateCheck/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WP-ClaimReview-EE24.iml" beforeDir="false" afterPath="$PROJECT_DIR$/WP-ClaimReview-EE24.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WP-ClaimReview-EE24.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EuroClimateCheck/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/EuroClimateCheck/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/euroclimatecheck-plugin.php" beforeDir="false" afterPath="$PROJECT_DIR$/euroclimatecheck-plugin.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,71 +15,48 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CodeInsightWorkspaceSettings">
-    <option name="optimizeImportsOnTheFly" value="true" />
-  </component>
   <component name="ComposerSettings">
     <execution />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Naroh091&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Naroh091"
   }
-}</component>
-  <component name="GitHubPullRequestState">{
-  &quot;prStates&quot;: []
-}</component>
-  <component name="GitLabMergeRequestsSettings">{}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/MalditaEs/WP-ClaimReview-EE24.git&quot;,
-    &quot;accountId&quot;: &quot;6677e46b-2bd4-458c-84f2-9ae9f0bfe026&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/MalditaEs/EuroClimateCheck-WP-Internal.git",
+    "accountId": "81feb9a6-230f-4711-acd0-a276c79f1b62"
   }
-}</component>
-  <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="PhpServers">
-    <servers>
-      <server host="ee24.test" id="890d53f8-ce2e-4601-bd66-d263260d4254" name="ee24.test" port="443" />
-    </servers>
-  </component>
+}]]></component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 4
-}</component>
-  <component name="ProjectId" id="2cNYMLwrSyu1cHv91g2PZBiOK0Y" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2yHWujzdarsEnpsv7uR77AJoHz7" />
   <component name="ProjectViewState">
     <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.laravel-idea.search-composer-json": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
+    "git-widget-placeholder": "#4 on claude/issue-3-20250609__145731",
     "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/david/IdeaProjects/euroclimatecheck-wp",
+    "last_opened_file_path": "/Users/david/IdeaProjects/ee24/wp-content/plugins/euroclimatecheck",
     "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.stylelint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
@@ -89,175 +64,18 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/css" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
-      </set>
-    </attachedChunks>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2753118c-7269-49af-986b-85ad722253ab" name="Changes" comment="" />
-      <created>1707953454822</created>
+      <changelist id="15fa9b1d-ac64-434e-81ce-0e31dfca369c" name="Changes" comment="" />
+      <created>1749492204641</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1707953454822</updated>
-      <workItem from="1707953455930" duration="22000" />
-      <workItem from="1707953499427" duration="5000" />
-      <workItem from="1707954854032" duration="862000" />
-      <workItem from="1707955741993" duration="129000" />
-      <workItem from="1708168071448" duration="140000" />
-      <workItem from="1708527994679" duration="40000" />
-      <workItem from="1708964456080" duration="57000" />
-      <workItem from="1709046952514" duration="3437000" />
-      <workItem from="1709051170227" duration="3892000" />
-      <workItem from="1709122274271" duration="7298000" />
-      <workItem from="1709132723760" duration="615000" />
-      <workItem from="1709133349311" duration="42000" />
-      <workItem from="1709796359015" duration="3617000" />
-      <workItem from="1715169929831" duration="2188000" />
-      <workItem from="1747745821445" duration="281000" />
-      <workItem from="1747746341128" duration="21000" />
-      <workItem from="1748526559798" duration="2000" />
-      <workItem from="1748526578127" duration="1458000" />
+      <updated>1749492204641</updated>
+      <workItem from="1749492206096" duration="1123000" />
     </task>
-    <task id="LOCAL-00001" summary="Fix available ratings">
-      <option name="closed" value="true" />
-      <created>1707955866395</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1707955866395</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Fix an issue with the EU institutions topic">
-      <option name="closed" value="true" />
-      <created>1708528030212</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1708528030212</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Fix an issue with the Politics related with the EU topic">
-      <option name="closed" value="true" />
-      <created>1708964508453</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1708964508453</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Fix an issue with empty values">
-      <option name="closed" value="true" />
-      <created>1709050394218</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1709050394218</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Show transients in the classic editor">
-      <option name="closed" value="true" />
-      <created>1709054630464</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1709054630464</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Enable compat mode, improve translations for the classic editor">
-      <option name="closed" value="true" />
-      <created>1709127615966</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1709127615966</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Add claim date of publication">
-      <option name="closed" value="true" />
-      <created>1709131219785</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1709131219785</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Fix array_key_exists issue in PHP 8.2">
-      <option name="closed" value="true" />
-      <created>1709133324108</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1709133324108</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Fix array_key_exists issue in PHP 8.2">
-      <option name="closed" value="true" />
-      <created>1709133385330</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1709133385330</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Add EU as country, fix issue when saving drafts">
-      <option name="closed" value="true" />
-      <created>1709799223333</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1709799223333</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Ensure tomselect elements existence before initialization&#10;&#10;Bumps the version of claim-review-plugin to 1.0.18 and refactors the JavaScript code in claim-review-admin.js to check for the existence of elements before initializing them with TomSelect. This change prevents potential JavaScript errors when the expected elements are not available in the DOM.">
-      <option name="closed" value="true" />
-      <created>1715182837585</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1715182837585</updated>
-    </task>
-    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix available ratings" />
-    <MESSAGE value="Fix an issue with the EU institutions topic" />
-    <MESSAGE value="Fix an issue with the Politics related with the EU topic" />
-    <MESSAGE value="Fix an issue with empty values" />
-    <MESSAGE value="Show transients in the classic editor" />
-    <MESSAGE value="Enable compat mode, improve translations for the classic editor" />
-    <MESSAGE value="Add claim date of publication" />
-    <MESSAGE value="Fix array_key_exists issue in PHP 8.2" />
-    <MESSAGE value="Add EU as country, fix issue when saving posts" />
-    <MESSAGE value="Add EU as country, fix issue when saving drafts" />
-    <MESSAGE value="Ensure tomselect elements existence before initialization&#10;&#10;Bumps the version of claim-review-plugin to 1.0.18 and refactors the JavaScript code in claim-review-admin.js to check for the existence of elements before initializing them with TomSelect. This change prevents potential JavaScript errors when the expected elements are not available in the DOM." />
-    <option name="LAST_COMMIT_MESSAGE" value="Ensure tomselect elements existence before initialization&#10;&#10;Bumps the version of claim-review-plugin to 1.0.18 and refactors the JavaScript code in claim-review-admin.js to check for the existence of elements before initializing them with TomSelect. This change prevents potential JavaScript errors when the expected elements are not available in the DOM." />
-  </component>
-  <component name="VgoProject">
-    <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="WordPressConfiguration" enabled="true">
-    <wordpressPath>$PROJECT_DIR$/../../..</wordpressPath>
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
   </component>
 </project>
