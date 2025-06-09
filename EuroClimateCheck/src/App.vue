@@ -245,6 +245,8 @@ const platforms = computed(() => {
 });
 
 const diffusionFormats = computed(() => {
+const diffusionFormats = computed(() => {
+  // Note: 'difussionFormat' is a known typo in the API field name.
   const dynamicFormats = dynamicFields.value.difussionFormat || [];
   if (dynamicFormats.length > 0) {
     const formatsObj = {};
