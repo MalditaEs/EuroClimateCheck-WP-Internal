@@ -403,23 +403,38 @@ function euroclimatecheck_fields_api_section_callback()
     <?php
 }
 
+// Add this new function to handle the refresh action
+function euroclimatecheck_handle_refresh_fields() {
+    if (isset($_POST['refresh_fields']) && check_admin_referer('euroclimatecheck_refresh_fields', 'euroclimatecheck_refresh_nonce')) {
+        $fields_api = new EuroClimateCheckFieldsAPI();
+        try {
+            $fields_api->refresh_fields();
+            add_settings_error(
+                'euroclimatecheck_messages',
+                'euroclimatecheck_message',
+                __('Field values updated successfully!', 'claimreview'),
+                'updated'
+            );
+        } catch (Exception $e) {
+            add_settings_error(
+                'euroclimatecheck_messages',
+                'euroclimatecheck_message',
+                sprintf(__('Error updating field values: %s', 'claimreview'), esc_html($e->getMessage())),
+                'error'
+            );
+        }
+    }
+}
+add_action('admin_init', 'euroclimatecheck_handle_refresh_fields');
+
 function euroclimatecheck_refresh_fields_callback()
 {
     $fields_api = new EuroClimateCheckFieldsAPI();
     $has_values = $fields_api->has_stored_values();
     $last_update = $fields_api->get_last_update_time();
     
-    // Handle refresh action
-    if (isset($_POST['refresh_fields']) && wp_verify_nonce($_POST['_wpnonce'], 'refresh_fields_nonce')) {
-        try {
-            $fields_api->refresh_fields();
-            echo '<div class="notice notice-success"><p>' . __('Field values updated successfully!', 'claimreview') . '</p></div>';
-            $has_values = true;
-            $last_update = current_time('mysql');
-        } catch (Exception $e) {
-            echo '<div class="notice notice-error"><p>' . sprintf(__('Error updating field values: %s', 'claimreview'), esc_html($e->getMessage())) . '</p></div>';
-        }
-    }
+    // Display any messages
+    settings_errors('euroclimatecheck_messages');
     
     ?>
     <div style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
@@ -443,8 +458,8 @@ function euroclimatecheck_refresh_fields_callback()
             </p>
         <?php endif; ?>
         
-        <form method="post" style="margin-top: 15px;">
-            <?php wp_nonce_field('refresh_fields_nonce'); ?>
+        <form method="post" action="">
+            <?php wp_nonce_field('euroclimatecheck_refresh_fields', 'euroclimatecheck_refresh_nonce'); ?>
             <input type="submit" 
                    name="refresh_fields" 
                    class="button button-secondary" 
